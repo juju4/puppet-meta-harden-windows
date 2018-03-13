@@ -40,7 +40,7 @@ build: off
 
 test_script:
 - ps: |
-    puppet apply -e "include ::harden_windows" --disable_warnings deprecations --verbose
+    puppet apply manifests/site.pp --disable_warnings deprecations --verbose
 
 after_test:
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
