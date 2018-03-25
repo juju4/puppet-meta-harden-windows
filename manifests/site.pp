@@ -88,15 +88,13 @@ node default {
   }
 
   # Mimikatz protection
-  registry_value { 'UseLogonCredential':
-    path       => 'HKLM\System\CurrentControlSet\Control\SecurityProviders\WDigest',
+  registry_value { 'HKLM\System\CurrentControlSet\Control\SecurityProviders\WDigest\UseLogonCredential':
     ensure     => present,
     type       => dword,
     data       => 0,
   }
 
-  registry_value { 'FilterAdministratorToken':
-    path       => 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
+  registry_value { 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\FilterAdministratorToken':
     ensure     => present,
     type       => dword,
     data       => 1,
@@ -109,8 +107,7 @@ node default {
 #    data       => 0,
 #  }
 
-  registry_value { 'AutoDownload':
-    path       => 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore',
+  registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore\AutoDownload':
     ensure     => present,
     type       => dword,
     data       => 4,
@@ -123,22 +120,19 @@ node default {
 #    data       => 1,
 #  }
 
-  registry_value { 'AllowIndexingEncryptedStoresOrItems':
-    path       => 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search',
+  registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search\AllowIndexingEncryptedStoresOrItems':
     ensure     => present,
     type       => dword,
     data       => 0,
   }
 
-  registry_value { 'NtfsDisableLastAccessUpdate':
-    path       => 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem',
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\NtfsDisableLastAccessUpdate':
     ensure     => present,
     type       => dword,
     data       => 0,
   }
 
-  registry_value { 'EnablePrefetcher':
-    path       => 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters',
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnablePrefetcher':
     ensure     => present,
     type       => dword,
     data       => 3,
@@ -182,8 +176,7 @@ node default {
 #  }
 
   # services-1: Services to be disabled
-  registry_value { 'SMB1':
-    path       => 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters',
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters\SMB1':
     ensure     => present,
     type       => dword,
     data       => 0,
