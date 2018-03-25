@@ -43,7 +43,12 @@ node default {
     ensure_microsoft_support_diagnostic_tool_turn_on_msdt_interactive_communication_with_support_provider_is_set_to_disabled => true,
     ensure_enable_disable_perftrack_is_set_to_disabled => true,
     ensure_enable_windows_ntp_client_is_set_to_enabled => true,
-    ensure_enable_windows_ntp_server_is_set_to_disabled => true
+    ensure_enable_windows_ntp_server_is_set_to_disabled => true,
+
+    # re-evaluate
+    ensure_add_workstations_to_domain_is_set_to_administrators => true,
+    configure_allow_log_on_through_remote_desktop_services => true,
+    configure_access_this_computer_from_the_network => false
   }
 
   windows_eventlog { 'Application':
@@ -334,5 +339,26 @@ node default {
     ensure     => present,
     type       => dword,
     data       => 1,
+  }
+
+  # https://technet.microsoft.com/en-us/library/cc976700.aspx
+  local_security_policy { 'Act as part of the operating system':
+    ensure         => 'present',
+    policy_setting => 'SeTcbPrivilege',
+    policy_type    => 'Privilege Rights',
+    # inspec: nobody
+    policy_value   => '*S-1-0-0',
+  }
+
+  # divergence between roles and inspec test
+  local_security_policy { 'Access this computer from the network':
+    ensure         => 'present',
+    policy_setting => 'SeNetworkLogonRight',
+    policy_type    => 'Privilege Rights',
+    # harden_windows_server: Administrators, Authenticated users + DC: Enterprise Domain Controllers
+#    policy_value   => '*S-1-5-32-544,*S-1-5-11',
+#    policy_value   => '*S-1-5-32-544,*S-1-5-11,*S-1-5-9',
+    # inspec: nobody
+    policy_value   => '*S-1-0-0',
   }
 }
