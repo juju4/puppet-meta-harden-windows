@@ -106,6 +106,16 @@ node default {
     data       => 0,
   }
 
+  # microsoft-online-accounts: Microsoft Online Accounts
+  registry_key { 'HKLM\SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowYourAccount':
+    ensure => present,
+  }
+  registry_value { 'HKLM\SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowYourAccount\value':
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
   registry_key { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore':
     ensure => present,
   }
