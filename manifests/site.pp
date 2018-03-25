@@ -107,6 +107,9 @@ node default {
 #    data       => 0,
 #  }
 
+  registry_key { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore':
+    ensure => present,
+  }
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore\AutoDownload':
     ensure     => present,
     type       => dword,
@@ -120,6 +123,9 @@ node default {
 #    data       => 1,
 #  }
 
+  registry_key { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search':
+    ensure => present,
+  }
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search\AllowIndexingEncryptedStoresOrItems':
     ensure     => present,
     type       => dword,
