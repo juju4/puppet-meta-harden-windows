@@ -91,6 +91,7 @@ node default {
     ensure => present,
   }
 
+  # FIXME!
   win_service { 'iphlpsvc':
        ensure             => 'present',
        binary_path_name   => 'C:\Windows\System32\svchost.exe -k NetSvcs',
