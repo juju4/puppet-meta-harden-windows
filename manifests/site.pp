@@ -90,7 +90,35 @@ node default {
     ensure => present,
   }
 
+  # windows-base
+  registry_value { 'HKLM\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionShares':
+    ensure     => present,
+    type       => string,
+    data       => '',
+  }
+
+  registry_value { 'HKLM\System\CurrentControlSet\Control\Lsa\MSV1_0\NtlmMinClientSec':
+    ensure     => present,
+    type       => dword,
+    data       => 537395248,
+  }
+
+  registry_value { 'HKLM\System\CurrentControlSet\Control\Lsa\MSV1_0\NtlmMinServerSec':
+    ensure     => present,
+    type       => dword,
+    data       => 537395248,
+  }
+
   # windows-audit
+  registry_key { 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe':
+    ensure => present,
+  }
+  registry_value { 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe\AuditLevel':
+    ensure     => present,
+    type       => dword,
+    data       => 8,
+  }
+
   registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit\ProcessCreationIncludeCmdLine_Enabled':
     ensure     => present,
     type       => dword,
@@ -113,6 +141,16 @@ node default {
     ensure     => present,
     type       => dword,
     data       => 0,
+  }
+
+  # laps
+  registry_key { 'HKLM\Software\Microsoft\Policies\Microsoft Services\AdmPwd':
+    ensure => present,
+  }
+  registry_value { 'HKLM\Software\Microsoft\Policies\Microsoft Services\AdmPwd\AdmPwdEnabled':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
   }
 
   # llmnr-101: LLMNR mitigations
