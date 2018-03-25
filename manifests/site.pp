@@ -154,13 +154,13 @@ node default {
   # wsh-101: Review potentially dangerous extensions association
   $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
   $dangerousext.each |String $ext| {
-    registry_value { "Extension ${ext}":
-      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
-      ensure     => present,
-      value      => '(default)',
-      type       => string,
-      data       => '%windir%\system32\notepad.exe',
-    }
+#    registry_value { "Extension ${ext}":
+#      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
+#      ensure     => present,
+#      value      => '(default)',
+#      type       => string,
+#      data       => '%windir%\system32\notepad.exe',
+#    }
     registry_value { "Extension ${ext} OpenWithList":
       path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
       ensure     => present,
