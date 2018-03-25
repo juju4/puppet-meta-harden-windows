@@ -22,7 +22,6 @@ install:
     puppet config print modulepath
     puppet module install puppetlabs-windows
     puppet module install puppetlabs-powershell
-    puppet module install puppetlabs-registry --version 2.0.1
     puppet module install puppet-windowsfeature
     puppet module install puppet-windows_firewall
     puppet module install puppet-windows_autoupdate
@@ -30,6 +29,7 @@ install:
     puppet module install puppet-msoffice
     puppet module install puppet-archive
     puppet module install autostructure-harden_windows_server
+    puppet module install puppetlabs-registry --version 2.0.1 --force
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: |
     $msiPath = "$($env:USERPROFILE)\inspec-2.0.17-1-x64.msi"
