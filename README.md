@@ -1,7 +1,7 @@
 [![Build Status - Master](https://travis-ci.org/juju4/puppet-meta-harden-windows.svg?branch=master)](https://travis-ci.org/juju4/puppet-meta-harden-windows)
 [![Build Status - Devel](https://travis-ci.org/juju4/puppet-meta-harden-windows.svg?branch=devel)](https://travis-ci.org/juju4/puppet-meta-harden-windows/branches)
-[![Appveyor - Master](https://ci.appveyor.com/api/projects/status/xxx/branch/master?svg=true)](https://ci.appveyor.com/project/juju4/puppet-meta-harden-windows)
-![Appveyor - Devel](https://ci.appveyor.com/api/projects/status/xxx/branch/devel?svg=true)
+[![Appveyor - Master](https://ci.appveyor.com/api/projects/status/0s0n3ml7douaon7r/branch/master?svg=true)](https://ci.appveyor.com/project/juju4/puppet-meta-harden-windows)
+![Appveyor - Devel](https://ci.appveyor.com/api/projects/status/0s0n3ml7douaon7r/branch/devel?svg=true)
 
 # puppet meta harden windows
 
