@@ -144,12 +144,12 @@ node default {
     data       => 3,
   }
 
-  registry_value { 'EnableSuperfetch':
-    path       => 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters',
-    ensure     => present,
-    type       => dword,
-    data       => 3,
-  }
+#  registry_value { 'EnableSuperfetch':
+#    path       => 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters',
+#    ensure     => present,
+#    type       => dword,
+#    data       => 3,
+#  }
 
   # wsh-101: Review potentially dangerous extensions association
   $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
