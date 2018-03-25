@@ -179,6 +179,9 @@ node default {
     type       => dword,
     data       => 1,
   }
+  windowsfeature { 'MicrosoftWindowsPowerShellV2':
+    ensure => absent,
+  }
 
   # microsoft-online-accounts: Microsoft Online Accounts
   registry_key { 'HKLM\SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowYourAccount':
@@ -267,6 +270,9 @@ node default {
     ensure     => present,
     type       => dword,
     data       => 0,
+  }
+  windowsfeature { 'SMB1Protocol':
+    ensure => absent,
   }
 
   # wpad-101: WPAD mitigations
