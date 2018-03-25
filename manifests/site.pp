@@ -65,6 +65,7 @@ node default {
     max_log_policy => 'overwrite'
   }
 
+  # FIXME!
   $eventlogs = ['Windows PowerShell', 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-WMI-Activity/Operational', 'Microsoft-Windows-Sysmon/Operational', 'Microsoft-Windows-AppLocker/EXE and DLL', 'Microsoft-Windows-AppLocker/MSI and Script', 'Microsoft-Windows-AppLocker/Packaged app-Deployment', 'Microsoft-Windows-AppLocker/Packaged app-Execution', 'Microsoft-Windows-TaskScheduler/Operational', 'Microsoft-Windows-DNS-Client/Operational' ]
   $eventlogs.each |String $log| {
     windows_eventlog { "${log}":
@@ -224,6 +225,7 @@ node default {
     type       => dword,
     data       => 1,
   }
+  # FIXME!
   windowsfeature { 'MicrosoftWindowsPowerShellV2':
     ensure => absent,
   }
@@ -316,6 +318,7 @@ node default {
     type       => dword,
     data       => 0,
   }
+  # FIXME!
   windowsfeature { 'SMB1Protocol':
     ensure => absent,
   }
