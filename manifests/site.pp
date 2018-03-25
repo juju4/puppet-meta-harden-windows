@@ -65,14 +65,12 @@ node default {
     max_log_policy => 'overwrite'
   }
 
-  windows_eventlog { 'Windows PowerShell':
-    log_size => '536870912',
-    max_log_policy => 'overwrite'
-  }
-
-  windows_eventlog { 'Microsoft-Windows-PowerShell/Operational':
-    log_size => '536870912',
-    max_log_policy => 'overwrite'
+  $eventlogs = ['Windows PowerShell', 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-WMI-Activity/Operational', 'Microsoft-Windows-Sysmon/Operational', 'Microsoft-Windows-AppLocker/EXE and DLL', 'Microsoft-Windows-AppLocker/MSI and Script', 'Microsoft-Windows-AppLocker/Packaged app-Deployment', 'Microsoft-Windows-AppLocker/Packaged app-Execution', 'Microsoft-Windows-TaskScheduler/Operational', 'Microsoft-Windows-DNS-Client/Operational' ]
+  $eventlogs.each |String $log| {
+    windows_eventlog { "${log}":
+      log_size => '536870912',
+      max_log_policy => 'overwrite'
+    }
   }
 
   class { 'windows_firewall': ensure => 'running' }
