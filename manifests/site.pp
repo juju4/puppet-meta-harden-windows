@@ -109,6 +109,13 @@ node default {
 #    data       => 0,
 #  }
 
+  registry_value { 'SMB1':
+    path       => 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters',
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
   registry_value { 'WpadOverride':
     path       => 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad'
     ensure     => present,
