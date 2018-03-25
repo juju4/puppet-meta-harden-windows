@@ -100,12 +100,11 @@ node default {
     data       => 1,
   }
 
-#  registry_value { 'LocalAccountTokenFilterPolicy':
-#    path       => 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
-#    ensure     => present,
-#    type       => dword,
-#    data       => 0,
-#  }
+  registry_value { 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy':
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
 
   registry_key { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore':
     ensure => present,
