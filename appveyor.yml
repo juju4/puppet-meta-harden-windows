@@ -43,9 +43,10 @@ test_script:
     puppet apply manifests/site.pp --disable_warnings deprecations --verbose
 
 after_test:
+- ps: Get-NetFirewallRule
+- ps: Get-Service
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
-- ps: Get-NetFirewallRule
 
 notifications:
 - provider: Email
