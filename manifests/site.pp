@@ -161,9 +161,10 @@ node default {
 #      type       => string,
 #      data       => '%windir%\system32\notepad.exe',
 #    }
-    registry_value { "a":
+    registry_value { "Extension ${ext} OpenWithList":
       path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
       ensure     => present,
+      value      => 'a',
       type       => string,
       data       => '%windir%\system32\notepad.exe',
     }
