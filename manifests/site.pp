@@ -117,7 +117,7 @@ node default {
   }
 
   registry_value { 'WpadOverride':
-    path       => 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad'
+    path       => 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad',
     ensure     => present,
     type       => dword,
     data       => 1,
