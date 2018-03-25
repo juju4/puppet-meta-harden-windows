@@ -87,6 +87,32 @@ node default {
     ensure => present,
   }
 
+  # windows-audit
+  registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit\ProcessCreationIncludeCmdLine_Enabled':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+  #  windows-ie
+  registry_value { 'HKLM\Software\Policies\Microsoft\Internet Explorer\Main\Isolation64Bit':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+  registry_value { 'HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3\270C':
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
+  # llmnr-101: LLMNR mitigations
+  registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\DNSClient\EnableMulticast':
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
   # Mimikatz protection
   registry_value { 'HKLM\System\CurrentControlSet\Control\SecurityProviders\WDigest\UseLogonCredential':
     ensure     => present,
@@ -104,6 +130,40 @@ node default {
     ensure     => present,
     type       => dword,
     data       => 0,
+  }
+
+  # powershell-module-logging: PowerShell Module Logging
+  registry_key { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging':
+    ensure => present,
+  }
+  registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\EnableModuleLogging':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+  registry_key { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames':
+    ensure => present,
+  }
+  registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames\*':
+    ensure     => present,
+    type       => string,
+    data       => '*',
+  }
+  registry_key { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging':
+    ensure => present,
+  }
+  registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging\EnableScriptBlockLogging':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+  registry_key { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription':
+    ensure => present,
+  }
+  registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription\EnableTranscripting':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
   }
 
   # microsoft-online-accounts: Microsoft Online Accounts
