@@ -104,7 +104,7 @@ node default {
     data       => 1,
   }
 
-  registry_value { 'Ensure Local admininistrators are filtered against Pass-The-Hash',
+  registry_value { 'Ensure Local admininistrators are filtered against Pass-The-Hash':
     path       => 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
     ensure     => present,
     value      => 'LocalAccountTokenFilterPolicy',
