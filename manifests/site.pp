@@ -109,6 +109,13 @@ node default {
 #    data       => 0,
 #  }
 
+  registry_value { 'NtfsDisableLastAccessUpdate':
+    path       => 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem',
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
   registry_value { 'EnablePrefetcher':
     path       => 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters',
     ensure     => present,
