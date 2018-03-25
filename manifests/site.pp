@@ -65,6 +65,11 @@ node default {
     max_log_policy => 'overwrite'
   }
 
+  windows_eventlog { 'Windows PowerShell':
+    log_size => '536870912',
+    max_log_policy => 'overwrite'
+  }
+
   windows_eventlog { 'Microsoft-Windows-PowerShell/Operational':
     log_size => '536870912',
     max_log_policy => 'overwrite'
