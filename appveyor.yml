@@ -29,7 +29,6 @@ install:
     puppet module install puppet-windows_eventlog
     puppet module install puppet-msoffice
     puppet module install puppet-archive
-    puppet module install badgerious-windows_env
     puppet module install autostructure-harden_windows_server
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: |
