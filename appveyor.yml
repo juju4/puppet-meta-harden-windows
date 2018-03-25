@@ -44,6 +44,7 @@ test_script:
 
 after_test:
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
+- ps: Get-NetFirewallRule
 
 notifications:
 - provider: Email
