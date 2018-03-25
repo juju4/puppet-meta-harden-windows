@@ -109,6 +109,13 @@ node default {
 #    data       => 0,
 #  }
 
+  registry_value { 'AutoDownload':
+    path       => 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore',
+    ensure     => present,
+    type       => dword,
+    data       => 4,
+  }
+
   registry_value { 'DisableOSUpgrade':
     path       => 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore',
     ensure     => present,
