@@ -116,12 +116,11 @@ node default {
     data       => 4,
   }
 
-#  registry_value { 'DisableOSUpgrade':
-#    path       => 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore',
-#    ensure     => present,
-#    type       => dword,
-#    data       => 1,
-#  }
+  registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore\DisableOSUpgrade':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
 
   registry_key { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search':
     ensure => present,
