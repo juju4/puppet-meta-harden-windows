@@ -48,6 +48,7 @@ node default {
     # re-evaluate
     ensure_add_workstations_to_domain_is_set_to_administrators => true,
     configure_allow_log_on_through_remote_desktop_services => true,
+    ensure_act_as_part_of_the_operating_system_is_set_to_no_one => true,
     configure_access_this_computer_from_the_network => false
   }
 
@@ -342,14 +343,6 @@ node default {
   }
 
   # https://technet.microsoft.com/en-us/library/cc976700.aspx
-  local_security_policy { 'Act as part of the operating system':
-    ensure         => 'present',
-    policy_setting => 'SeTcbPrivilege',
-    policy_type    => 'Privilege Rights',
-    # inspec: nobody
-    policy_value   => '*S-1-0-0',
-  }
-
   # divergence between roles and inspec test
   local_security_policy { 'Access this computer from the network':
     ensure         => 'present',
