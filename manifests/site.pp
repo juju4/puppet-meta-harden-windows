@@ -151,6 +151,37 @@ node default {
     data       => 3,
   }
 
+  # wsh-101: Review potentially dangerous extensions association
+  $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
+  $dangerousext.each |String $ext| {
+    registry_value { "Extension ${ext}":
+      path       => "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.${ext}",
+      ensure     => present,
+      value      => '(default)',
+      type       => string,
+      data       => '%windir%\system32\notepad.exe',
+    }
+    registry_value { "Extension ${ext} OpenWithList":
+      path       => "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.${ext}\OpenWithList",
+      ensure     => present,
+      value      => 'a',
+      type       => string,
+      data       => '%windir%\system32\notepad.exe',
+    }
+  }
+
+  $dangerousextcmd = ['HKCR\htafile\shell\open\command', 'HKCR\VBSFile\shell\edit\command', 'HKCR\VBSFile\shell\open\command', 'HKCR\VBSFile\shell\open2\command', 'HKCR\VBEFile\shell\edit\command', 'HKCR\VBEFile\shell\open\command', 'HKCR\VBEFile\shell\open2\command', 'HKCR\JSFile\shell\open\command', 'HKCR\JSEFile\shell\open\command', 'HKCR\wshfile\shell\open\command', 'HKCR\scriptletfile\shell\open\command' ]
+  $dangerousextcmd.each |String $extcmd| {
+    registry_value { "Extension ${extcmd}":
+      path       => "${extcmd}",
+      ensure     => present,
+      value      => '(default)',
+      type       => string,
+      data       => '%windir%\system32\notepad.exe',
+    }
+  }
+
+  # services-1: Services to be disabled
   registry_value { 'SMB1':
     path       => 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters',
     ensure     => present,
@@ -158,6 +189,7 @@ node default {
     data       => 0,
   }
 
+  # wpad-101: WPAD mitigations
   registry_value { 'WpadOverride':
     path       => 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad',
     ensure     => present,
