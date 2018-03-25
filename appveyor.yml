@@ -9,51 +9,35 @@ init:
 - 'mkdir C:\ProgramData\PuppetLabs\facter && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\hiera && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\puppet\var && exit 0'
+environment:
+  matrix:
+  - PUPPET_GEM_VERSION: ~> 4.0
+    RUBY_VER: 23
+  - PUPPET_GEM_VERSION: ~> 4.0
+    RUBY_VER: 23-x64
+# https://github.com/ffi/ffi/issues/602#issuecomment-363364015  Ruby Gems Version is limited to < 2.5 on windows.
+  - PUPPET_GEM_VERSION: ~> 5.0
+    RUBY_VER: 24
+  - PUPPET_GEM_VERSION: ~> 5.0
+    RUBY_VER: 24-x64
+  - PUPPET_GEM_VERSION: 4.7.1
+    RUBY_VER: 23-x64
 matrix:
   fast_finish: true
-
 install:
-- SET PATH=C:\Program Files\Puppet Labs\Puppet\bin;C:\Ruby%RUBY_VER%\bin;%PATH%
+- SET PATH=C:\Ruby%RUBY_VER%\bin;%PATH%
 - ps: |
-    $msiPath = "$($env:USERPROFILE)\puppet-agent-5.4.0-x64.msi"
-    (New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.4.0-x64.msi', $msiPath)
-    cmd /c start /wait msiexec /i $msiPath /q /L* c:\install-puppet.log
-    puppet config print config
-    puppet config print modulepath
-    puppet module install puppetlabs-windows
-    puppet module install puppetlabs-powershell
-    puppet module install puppetlabs-registry
-    puppet module install puppet-windowsfeature
-    puppet module install puppet-windows_firewall
-    puppet module install puppet-windows_autoupdate
-    puppet module install puppet-windows_eventlog
-    puppet module install puppet-msoffice
-    puppet module install puppet-archive
-    puppet module install autostructure-harden_windows_server
-    puppet module install ocastle-win_service
-- copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
-- ps: |
-    $msiPath = "$($env:USERPROFILE)\inspec-2.0.17-1-x64.msi"
-    (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.0.17/windows/2016/inspec-2.0.17-1-x64.msi', $msiPath)
-    cmd /c start /wait msiexec /i $msiPath /q
-
+    gem list openssl
+    ruby -ropenssl -e 'puts \"OpenSSL Version - #{OpenSSL::OPENSSL_VERSION}\"; puts \"OpenSSL Library Version - #{OpenSSL::OPENSSL_LIBRARY_VERSION}\"'
+- bundle install --jobs 4 --retry 2 --without system_tests build
+- type Gemfile.lock
 build: off
-
 test_script:
-- ps: |
-    puppet apply manifests/site.pp --disable_warnings deprecations --verbose
-
-after_test:
-- ps: Get-NetFirewallRule
-- ps: Get-Service
-
-on_finish:
-#- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
-- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
-
-on_failure:
-- cmd: puppet module list --tree
-
+- bundle exec puppet -V
+- ruby -v
+- gem -v
+- bundle -v
+- bundle exec rake spec
 notifications:
 - provider: Email
   to:
