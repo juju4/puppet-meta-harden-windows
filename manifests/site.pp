@@ -93,10 +93,12 @@ node default {
 
   win_service { 'iphlpsvc':
        ensure             => 'present',
+       binary_path_name   => 'C:\Windows\System32\svchost.exe -k NetSvcs',
        start_type         => 'disabled',
   }
   win_service { 'WinHttpAutoProxySvc':
        ensure             => 'present',
+       binary_path_name   => 'C:\Windows\system32\svchost.exe -k LocalService',
        start_type         => 'disabled',
   }
 

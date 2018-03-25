@@ -46,6 +46,8 @@ test_script:
 after_test:
 - ps: Get-NetFirewallRule
 - ps: Get-Service
+
+on_finish:
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
 
