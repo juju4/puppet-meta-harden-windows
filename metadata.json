@@ -8,6 +8,7 @@
   "project_page": "https://github.com/juju4/puppet-meta-harden-windows",
   "dependencies": [
     {"name":"puppetlabs/powershell","version_requirement":">= 2.1.0 < 6.0.0"},
+    {"name":"puppetlabs/registry","version_requirement":">= 2.0.0 < 6.0.0"},
     {"name":"puppet/windowsfeature","version_requirement":">= 3.0.0 < 6.0.0"},
     {"name":"puppet/windows_firewall","version_requirement":">= 2.0.0 < 6.0.0"},
     {"name":"puppet/windows_autoupdate","version_requirement":">= 2.0.0 < 6.0.0"},

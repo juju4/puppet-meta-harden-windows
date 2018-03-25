@@ -5,6 +5,7 @@ forge "https://forgeapi.puppetlabs.com"
 
 # use dependencies defined in Modulefile
 mod 'puppetlabs-stdlib'
+mod 'puppetlabs-registry'
 mod 'puppetlabs-powershell'
 mod 'puppet-windows_firewall'
 mod 'puppet-windows_eventlog'
