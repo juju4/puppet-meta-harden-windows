@@ -286,15 +286,14 @@ node default {
   }
 
   # wsh-101: Review potentially dangerous extensions association
-#  $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
-#  $dangerousext.each |String $ext| {
-#    registry_value { "Extension ${ext}":
-#      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
-#      ensure     => present,
-#      value      => '(default)',
-#      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
-#    }
+  $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
+  $dangerousext.each |String $ext| {
+    registry_value { "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}":
+      ensure     => present,
+      value      => '(default)',
+      type       => string,
+      data       => '%windir%\system32\notepad.exe',
+    }
 #    registry_value { "Extension ${ext} OpenWithList":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
 #      ensure     => present,
@@ -302,7 +301,7 @@ node default {
 #      type       => string,
 #      data       => '%windir%\system32\notepad.exe',
 #    }
-#  }
+  }
 #
 #  $dangerousextcmd = ['HKCR\\htafile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\edit\\command', 'HKCR\\VBSFile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\open2\\command', 'HKCR\\VBEFile\\shell\\edit\\command', 'HKCR\\VBEFile\\shell\\open\\command', 'HKCR\\VBEFile\\shell\\open2\\command', 'HKCR\\JSFile\\shell\\open\\command', 'HKCR\\JSEFile\\shell\\open\\command', 'HKCR\\wshfile\\shell\\open\\command', 'HKCR\\scriptletfile\\shell\\open\\command' ]
 #  $dangerousextcmd.each |String $extcmd| {
