@@ -342,7 +342,7 @@ node default {
   }
 
   # https://technet.microsoft.com/en-us/library/cc976700.aspx
-  local_security_policy { 'Act as part of the operating system':
+  local_security_policy { 'Act as part of the operating system - global':
     ensure         => 'present',
     policy_setting => 'SeTcbPrivilege',
     policy_type    => 'Privilege Rights',
@@ -351,7 +351,7 @@ node default {
   }
 
   # divergence between roles and inspec test
-  local_security_policy { 'Access this computer from the network':
+  local_security_policy { 'Access this computer from the network - global':
     ensure         => 'present',
     policy_setting => 'SeNetworkLogonRight',
     policy_type    => 'Privilege Rights',
