@@ -109,6 +109,13 @@ node default {
 #    data       => 0,
 #  }
 
+  registry_value { 'DisableOSUpgrade':
+    path       => 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore',
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
   registry_value { 'AllowIndexingEncryptedStoresOrItems':
     path       => 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search',
     ensure     => present,
