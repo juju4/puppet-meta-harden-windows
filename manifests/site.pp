@@ -48,24 +48,25 @@ node default {
 
   windows_eventlog { 'Application':
     log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
-    log_size => '512000',
+    # 512MB
+    log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'System':
     log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
-    log_size => '512000',
+    log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'Security':
     log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
-    log_size => '512000',
+    log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'Microsoft-Windows-PowerShell/Operational':
-    log_size => '512000',
+    log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
