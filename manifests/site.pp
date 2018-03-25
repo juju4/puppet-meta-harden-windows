@@ -109,6 +109,13 @@ node default {
 #    data       => 0,
 #  }
 
+  registry_value { 'AllowIndexingEncryptedStoresOrItems':
+    path       => 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search',
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
   registry_value { 'NtfsDisableLastAccessUpdate':
     path       => 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem',
     ensure     => present,
