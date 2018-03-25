@@ -190,6 +190,9 @@ node default {
   }
 
   # wpad-101: WPAD mitigations
+  registry_key { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad':
+    ensure => present,
+  }
   registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad\WpadOverride':
     ensure     => present,
     type       => dword,
