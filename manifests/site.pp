@@ -90,6 +90,15 @@ node default {
     ensure => present,
   }
 
+  win_service { 'iphlpsvc':
+       ensure             => 'present',
+       start_type         => 'disabled',
+  }
+  win_service { 'WinHttpAutoProxySvc':
+       ensure             => 'present',
+       start_type         => 'disabled',
+  }
+
   # windows-base
   registry_value { 'HKLM\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionShares':
     ensure     => present,
