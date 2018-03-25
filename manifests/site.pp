@@ -116,6 +116,13 @@ node default {
     data       => 3,
   }
 
+  registry_value { 'EnableSuperfetch':
+    path       => 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters',
+    ensure     => present,
+    type       => dword,
+    data       => 3,
+  }
+
   registry_value { 'SMB1':
     path       => 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters',
     ensure     => present,
