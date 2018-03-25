@@ -102,8 +102,8 @@ node default {
   # windows-base
   registry_value { 'HKLM\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionShares':
     ensure     => present,
-    type       => string,
-    data       => '',
+    type       => array,
+    data       => [''],
   }
 
   registry_value { 'HKLM\System\CurrentControlSet\Control\Lsa\MSV1_0\NtlmMinClientSec':
