@@ -100,10 +100,16 @@ node default {
   }
 
   #  windows-ie
+  registry_key { 'HKLM\Software\Policies\Microsoft\Internet Explorer\Main':
+    ensure => present,
+  }
   registry_value { 'HKLM\Software\Policies\Microsoft\Internet Explorer\Main\Isolation64Bit':
     ensure     => present,
     type       => dword,
     data       => 1,
+  }
+  registry_key { 'HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3':
+    ensure => present,
   }
   registry_value { 'HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3\270C':
     ensure     => present,
@@ -112,6 +118,9 @@ node default {
   }
 
   # llmnr-101: LLMNR mitigations
+  registry_key { 'HKLM\Software\Policies\Microsoft\Windows NT\DNSClient':
+    ensure => present,
+  }
   registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\DNSClient\EnableMulticast':
     ensure     => present,
     type       => dword,
