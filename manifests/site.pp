@@ -88,26 +88,23 @@ node default {
   }
 
   # Mimikatz protection
-  registry_value { 'Pre-Win server 2012 Mimikatz Protection - UseLogonCredential':
+  registry_value { 'UseLogonCredential':
     path       => 'HKLM\System\CurrentControlSet\Control\SecurityProviders\WDigest',
     ensure     => present,
-    value      => 'UseLogonCredential',
     type       => dword,
     data       => 0,
   }
 
-  registry_value { 'enabled User Account Control - Admin Approval Mode for the built-in Administrator account':
+  registry_value { 'FilterAdministratorToken':
     path       => 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
     ensure     => present,
-    value      => 'FilterAdministratorToken',
     type       => dword,
     data       => 1,
   }
 
-  registry_value { 'Ensure Local admininistrators are filtered against Pass-The-Hash':
+  registry_value { 'LocalAccountTokenFilterPolicy':
     path       => 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
     ensure     => present,
-    value      => 'LocalAccountTokenFilterPolicy',
     type       => dword,
     data       => 0,
   }
