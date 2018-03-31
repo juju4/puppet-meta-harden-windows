@@ -244,7 +244,7 @@ node default {
     type       => dword,
     data       => 1,
   }
-  # FIXME!
+  # FIXME! nok windowsfeature, nok dsc_windowsfeature...
   windowsfeature { 'MicrosoftWindowsPowerShellV2':
     ensure => absent,
   }
