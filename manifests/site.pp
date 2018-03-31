@@ -247,8 +247,8 @@ node default {
     ensure => absent,
   }
   dsc_windowsfeature {'MicrosoftWindowsPowerShellV2':
-    dsc_ensure = 'absent',
-    dsc_name = 'MicrosoftWindowsPowerShellV2',
+    dsc_ensure => 'absent',
+    dsc_name   => 'MicrosoftWindowsPowerShellV2',
   }
 
   # microsoft-online-accounts: Microsoft Online Accounts
@@ -344,8 +344,8 @@ node default {
     ensure => absent,
   }
   dsc_windowsfeature {'SMB1Protocol':
-    dsc_ensure = 'absent',
-    dsc_name = 'SMB1Protocol',
+    dsc_ensure => 'absent',
+    dsc_name   => 'SMB1Protocol',
   }
 
   # wpad-101: WPAD mitigations
