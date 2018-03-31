@@ -7,6 +7,7 @@ forge "https://forgeapi.puppetlabs.com"
 mod 'puppetlabs-stdlib'
 mod 'puppetlabs-registry'
 mod 'puppetlabs-powershell'
+mod 'puppetlabs-dsc'
 mod 'puppet-windows_firewall'
 mod 'puppet-windows_eventlog'
 mod 'puppet-windows_autoupdate'

@@ -23,6 +23,7 @@ install:
     puppet module install puppetlabs-windows
     puppet module install puppetlabs-powershell
     puppet module install puppetlabs-registry
+    puppet module install puppetlabs-dsc
     puppet module install puppet-windowsfeature
     puppet module install puppet-windows_firewall
     puppet module install puppet-windows_autoupdate
