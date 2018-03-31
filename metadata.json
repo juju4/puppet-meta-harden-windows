@@ -16,7 +16,7 @@
     {"name":"puppet/windows_eventlog","version_requirement":">= 2.0.0 < 6.0.0"},
     {"name":"puppet/msoffice","version_requirement":">= 3.0.0 < 6.0.0"},
     {"name":"puppet/archive","version_requirement":">= 2.0.0 < 6.0.0"},
-    {"name":"puppet/windows_env","version_requirement":">= 3.0.0 < 6.0.0"}
+    {"name":"puppet/windows_env","version_requirement":">= 3.0.0 < 6.0.0"},
     {"name":"ocastle/win_service","version_requirement":">= 0.0.10 < 6.0.0"},
     {"name":"noma4i/windows_applocker","version_requirement":">= 0.2.0 < 6.0.0"}
   ],
