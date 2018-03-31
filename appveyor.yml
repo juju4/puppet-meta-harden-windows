@@ -32,6 +32,7 @@ install:
     puppet module install puppet-archive
     puppet module install autostructure-harden_windows_server
     puppet module install ocastle-win_service
+    puppet module install noma4i-windows_applocker
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: |
     $msiPath = "$($env:USERPROFILE)\inspec-2.0.17-1-x64.msi"
