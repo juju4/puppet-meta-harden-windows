@@ -108,6 +108,14 @@ node default {
 #       binary_path_name   => 'C:\Windows\system32\svchost.exe -k LocalService',
 #       start_type         => 'disabled',
 #  }
+  dsc_service{'iphlpsvc':
+    dsc_startuptype => 'Disabled',
+    dsc_name => 'iphlpsvc'
+  }
+  dsc_service{'WinHttpAutoProxySvc':
+    dsc_startuptype => 'Disabled',
+    dsc_name => 'WinHttpAutoProxySvc'
+  }
 
   # windows-base
   registry_value { 'HKLM\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionShares':
