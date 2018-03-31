@@ -110,11 +110,13 @@ node default {
 #  }
   dsc_service{'iphlpsvc':
     dsc_startuptype => 'Disabled',
-    dsc_name => 'iphlpsvc'
+    dsc_name => 'iphlpsvc',
+    dsc_state  => 'stopped'
   }
   dsc_service{'WinHttpAutoProxySvc':
     dsc_startuptype => 'Disabled',
-    dsc_name => 'WinHttpAutoProxySvc'
+    dsc_name => 'WinHttpAutoProxySvc',
+    dsc_state  => 'stopped'
   }
 
   # windows-base
