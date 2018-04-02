@@ -85,7 +85,7 @@ node default {
 #    }
     dsc_registry {"${log}":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\${log}",
+      dsc_key => "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\${log}",
       dsc_valuename => 'MaxSize',
       dsc_valuedata => '536870912',
     }
