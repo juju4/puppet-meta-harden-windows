@@ -193,6 +193,38 @@ node default {
     data       => 1,
   }
 
+  # windows-account
+  local_security_policy { 'Allow logon through Terminal Services':
+    ensure         => 'present',
+    policy_setting => 'SeRemoteInteractiveLogonRight',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-5-32-544',
+  }
+
+  # cis-access-cred-manager
+  local_security_policy { 'Access Credential Manager as a trusted caller':
+    ensure         => 'present',
+    policy_setting => 'SeTrustedCredManAccessPrivilege',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-0-0',
+  }
+
+  # cis-act-as-os
+  local_security_policy { 'Act as part of the operating system':
+    ensure         => 'present',
+    policy_setting => 'SeTcbPrivilege',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-0-0',
+  }
+
+  # cis-add-workstations
+  local_security_policy { 'Add workstations to domain':
+    ensure         => 'present',
+    policy_setting => 'SeMachineAccountPrivilege',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-5-32-544',
+  }
+
   # llmnr-101: LLMNR mitigations
   registry_key { 'HKLM\Software\Policies\Microsoft\Windows NT\DNSClient':
     ensure => present,
