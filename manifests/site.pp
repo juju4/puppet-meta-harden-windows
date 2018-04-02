@@ -85,7 +85,7 @@ node default {
 #    }
     dsc_registry {"${log}":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\${log}",
+      dsc_key => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
       dsc_valuename => 'MaxSize',
       dsc_valuedata => '536870912',
     }
@@ -367,13 +367,13 @@ node default {
 #    }
     dsc_registry {"registry_ext_${ext}":
       dsc_ensure => 'Present',
-      dsc_key => "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.${ext}",
+      dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
       dsc_valuename => '(default)',
       dsc_valuedata => '%windir%\system32\notepad.exe',
     }
     dsc_registry {"registry_ext_${ext}_OpenWithList":
       dsc_ensure => 'Present',
-      dsc_key => "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.${ext}\OpenWithList",
+      dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
       dsc_valuename => 'a',
       dsc_valuedata => '%windir%\system32\notepad.exe',
     }
