@@ -60,23 +60,34 @@ node default {
   }
 
   windows_eventlog { 'System':
-    log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
+    log_path => '%SystemRoot%\system32\winevt\Logs\System.evtx',
     log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'Security':
-    log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
+    log_path => '%SystemRoot%\system32\winevt\Logs\Security.evtx',
     log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
-  # FIXME!
-  $eventlogs = ['Windows PowerShell', 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-WMI-Activity/Operational', 'Microsoft-Windows-Sysmon/Operational', 'Microsoft-Windows-AppLocker/EXE and DLL', 'Microsoft-Windows-AppLocker/MSI and Script', 'Microsoft-Windows-AppLocker/Packaged app-Deployment', 'Microsoft-Windows-AppLocker/Packaged app-Execution', 'Microsoft-Windows-TaskScheduler/Operational', 'Microsoft-Windows-DNS-Client/Operational' ]
+  windows_eventlog { 'Windows Powershell':
+    log_size => '536870912',
+    max_log_policy => 'overwrite'
+  }
+
+  $eventlogs = [ 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-WMI-Activity/Operational', 'Microsoft-Windows-Sysmon/Operational', 'Microsoft-Windows-AppLocker/EXE and DLL', 'Microsoft-Windows-AppLocker/MSI and Script', 'Microsoft-Windows-AppLocker/Packaged app-Deployment', 'Microsoft-Windows-AppLocker/Packaged app-Execution', 'Microsoft-Windows-TaskScheduler/Operational', 'Microsoft-Windows-DNS-Client/Operational' ]
   $eventlogs.each |String $log| {
-    windows_eventlog { "${log}":
-      log_size => '536870912',
-      max_log_policy => 'overwrite'
+    # FIXME!
+#    windows_eventlog { "${log}":
+#      log_size => '536870912',
+#      max_log_policy => 'overwrite'
+#    }
+    dsc_registry {"${log}":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\${log}",
+      dsc_valuename => 'MaxSize',
+      dsc_valuedata => '536870912',
     }
   }
 
