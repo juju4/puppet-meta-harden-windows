@@ -49,7 +49,8 @@ node default {
     ensure_add_workstations_to_domain_is_set_to_administrators => true,
     configure_allow_log_on_through_remote_desktop_services => true,
     ensure_act_as_part_of_the_operating_system_is_set_to_no_one => true,
-    configure_access_this_computer_from_the_network => false
+    configure_access_this_computer_from_the_network => false,
+    ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false
   }
 
   windows_eventlog { 'Application':
