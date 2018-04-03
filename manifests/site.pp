@@ -195,7 +195,7 @@ node default {
   }
 
   # windows-account
-  local_security_policy { 'Allow logon through Terminal Services':
+  local_security_policy { 'Allow log on through Remote Desktop Services':
     ensure         => 'present',
     policy_setting => 'SeRemoteInteractiveLogonRight',
     policy_type    => 'Privilege Rights',
