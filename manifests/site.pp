@@ -454,4 +454,11 @@ node default {
 
   # msoffice
 
+  # misc
+
+  exec { 'Set-AppLockerPolicy':
+    command   => 'Set-AppLockerPolicy -XMLPolicy puppet:///modules/puppet-meta-harden-windows/files/applocker.xml',
+    provider  => powershell,
+  }
+
 }
