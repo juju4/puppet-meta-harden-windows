@@ -53,6 +53,7 @@ node default {
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
   }
 
+  # logging
   windows_eventlog { 'Application':
     log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
     # 512MB
@@ -218,7 +219,8 @@ node default {
     policy_value   => '*S-1-0-0',
   }
 
-  # cis-add-workstations
+  # cis-add-workstations (harden_windows_server: ensure_add_workstations_to_domain_is_set_to_administrators)
+  # FIXME! still not applied
 #  local_security_policy { 'Add workstations to domain':
 #    ensure         => 'present',
 #    policy_setting => 'SeMachineAccountPrivilege',
@@ -434,4 +436,14 @@ node default {
     # inspec: nobody
     policy_value   => '*S-1-0-0',
   }
+
+  local_security_policy { 'Create symbolic links':
+    ensure         => 'present',
+    policy_setting => 'SeCreateSymbolicLinkPrivilege',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-5-32-544',
+  }
+
+  # msoffice
+
 }
