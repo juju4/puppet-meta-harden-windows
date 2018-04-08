@@ -53,6 +53,14 @@ node default {
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
   }
 
+  # chocolatey install (default for Windows)
+  $chocolatey_packages = ['powershell', 'sysmon', 'osquery', 'git', 'sysinternals' ]
+  $chocolatey_packages.each |String $pkg| {
+    package { "${pkg}":
+      ensure   => latest,
+    }
+  }
+
   # logging
   windows_eventlog { 'Application':
     log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
