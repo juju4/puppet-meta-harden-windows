@@ -445,12 +445,13 @@ node default {
     policy_value   => '*S-1-0-0',
   }
 
-  local_security_policy { 'Create symbolic links':
-    ensure         => 'present',
-    policy_setting => 'SeCreateSymbolicLinkPrivilege',
-    policy_type    => 'Privilege Rights',
-    policy_value   => '*S-1-5-32-544',
-  }
+   # already in harden_windows_server
+#  local_security_policy { 'Create symbolic links':
+#    ensure         => 'present',
+#    policy_setting => 'SeCreateSymbolicLinkPrivilege',
+#    policy_type    => 'Privilege Rights',
+#    policy_value   => '*S-1-5-32-544',
+#  }
 
   # msoffice
 
