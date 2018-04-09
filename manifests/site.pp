@@ -458,13 +458,23 @@ node default {
   # msoffice
 
   # misc
+  file { 'applocker.xml':
+    path    => 'c:\windows\temp\applocker.xml',
+    ensure  => file,
+    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
+  }
   exec { 'Set-AppLockerPolicy':
-    command   => 'Set-AppLockerPolicy -XMLPolicy puppet:///modules/puppet-meta-harden-windows/files/applocker.xml',
+    command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
     provider  => powershell,
   }
 
+  file { 'firewall.wfw':
+    path    => 'c:\windows\temp\firewall.wfw',
+    ensure  => file,
+    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
+  }
   exec { 'Firewall import':
-    command   => 'netsh advfirewall import puppet:///modules/puppet-meta-harden-windows/files/firewall.wfw',
+    command   => 'netsh advfirewall import c:\windows\temp\firewall.wfw',
   }
 
 }
