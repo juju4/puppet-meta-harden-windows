@@ -58,6 +58,8 @@ node default {
   $chocolatey_packages.each |String $pkg| {
     package { "${pkg}":
       ensure   => latest,
+      provider => chocolatey,
+#      source   => 'https://<internal_repo>/chocolatey',
     }
   }
 
