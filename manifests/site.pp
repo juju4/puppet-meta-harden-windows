@@ -474,7 +474,7 @@ node default {
     source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
   }
   exec { 'Firewall import':
-    command   => 'netsh advfirewall import c:\windows\temp\firewall.wfw',
+    command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
   }
 
 }
