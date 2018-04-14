@@ -368,6 +368,8 @@ node default {
   }
 
   # wsh-101: Review potentially dangerous extensions association
+  # puppetlabs/registry: Limitations: Keys within HKEY_LOCAL_MACHINE (hklm), HKEY_CLASSES_ROOT (hkcr) or HKEY_USERS (hku) are supported. Other predefined root keys (e.g., HKEY_CURRENT_USER) are not currently supported.
+  # puppetlabs/dsc: DSC Resources are executed under the SYSTEM context by default, which means you are unable to access any user level Registry key without providing alternate credentials.
   $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
   $dangerousext.each |String $ext| {
 #    registry_value { "Extension ${ext}":
