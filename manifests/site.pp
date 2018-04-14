@@ -141,6 +141,12 @@ node default {
     dsc_name => 'WinHttpAutoProxySvc',
     dsc_state  => 'stopped'
   }
+  # requirement for powershell install
+  dsc_service{'wuauserv':
+    dsc_startuptype => 'Automatic',
+    dsc_name => 'wuauserv',
+    dsc_state  => 'Running'
+  }
 
   # windows-base
   registry_value { 'HKLM\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionShares':
