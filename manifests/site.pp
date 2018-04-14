@@ -459,9 +459,10 @@ node default {
 
   # misc
   file { 'applocker.xml':
-    path    => 'c:\windows\temp\applocker.xml',
+    path    => 'c:/windows/temp/applocker.xml',
     ensure  => file,
-    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
+#    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
+    source  => "c:/projects/puppet-meta-harden-windows/files/applocker.xml",
   }
   exec { 'Set-AppLockerPolicy':
     command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
@@ -469,9 +470,10 @@ node default {
   }
 
   file { 'firewall.wfw':
-    path    => 'c:\windows\temp\firewall.wfw',
+    path    => 'c:/windows/temp/firewall.wfw',
     ensure  => file,
-    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
+#    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
+    source  => "c:/projects/puppet-meta-harden-windows/files/firewall.wfw",
   }
   exec { 'Firewall import':
     command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
