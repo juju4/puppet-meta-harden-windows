@@ -478,14 +478,16 @@ node default {
     provider  => powershell,
   }
 
-  file { 'firewall.wfw':
-    path    => 'c:/windows/temp/firewall.wfw',
-    ensure  => file,
-#    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
-    source  => "c:/projects/puppet-meta-harden-windows/files/firewall.wfw",
-  }
+  # FIXME! 'Could not evaluate: Could not retrieve information from environment production source(s) file:/c:/projects/puppet-meta-harden-windows/files/firewall.wfw'
+#  file { 'firewall.wfw':
+#    path    => 'c:/windows/temp/firewall.wfw',
+#    ensure  => file,
+##    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
+#    source  => "c:/projects/puppet-meta-harden-windows/files/firewall.wfw",
+#  }
   exec { 'Firewall import':
-    command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
+    #command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
+    command   => 'c:\windows\system32\netsh.exe advfirewall import c:\projects\puppet-meta-harden-windows\files\firewall.wfw',
   }
 
 }
