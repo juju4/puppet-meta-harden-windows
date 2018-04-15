@@ -69,7 +69,10 @@ on_finish:
     Get-DscResource MSFT_RoleResource
     Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
     True
-- ps: Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration"
+- ps: |
+    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources"
+    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource"
+    True
 - ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
