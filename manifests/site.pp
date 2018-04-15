@@ -70,6 +70,16 @@ node default {
     }
   }
 
+  file { 'sysmonconfig.xml':
+    path    => 'c:/windows/temp/sysmonconfig.xml',
+    ensure  => file,
+#    source  => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
+    source  => "c:/projects/puppet-meta-harden-windows/files/sysmonconfig-export.xml",
+  }
+  exec { 'Load sysmon config':
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
+  }
+
   # logging
   windows_eventlog { 'Application':
     log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
