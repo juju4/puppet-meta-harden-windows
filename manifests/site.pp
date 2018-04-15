@@ -367,12 +367,6 @@ node default {
     data       => 3,
   }
 
-  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnableSuperfetch':
-    ensure     => present,
-    type       => dword,
-    data       => 3,
-  }
-
   # wsh-101: Review potentially dangerous extensions association
   # puppetlabs/registry: Limitations: Keys within HKEY_LOCAL_MACHINE (hklm), HKEY_CLASSES_ROOT (hkcr) or HKEY_USERS (hku) are supported. Other predefined root keys (e.g., HKEY_CURRENT_USER) are not currently supported.
   # puppetlabs/dsc: DSC Resources are executed under the SYSTEM context by default, which means you are unable to access any user level Registry key without providing alternate credentials.
