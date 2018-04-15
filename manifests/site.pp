@@ -53,6 +53,13 @@ node default {
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
   }
 
+  # requirement for powershell install
+  dsc_service{'wuauserv':
+    dsc_startuptype => 'Automatic',
+    dsc_name => 'wuauserv',
+    dsc_state  => 'Running'
+  }
+
   # chocolatey install (default for Windows)
   $chocolatey_packages = ['powershell', 'sysmon', 'osquery', 'git', 'sysinternals' ]
   $chocolatey_packages.each |String $pkg| {
@@ -140,12 +147,6 @@ node default {
     dsc_startuptype => 'Disabled',
     dsc_name => 'WinHttpAutoProxySvc',
     dsc_state  => 'stopped'
-  }
-  # requirement for powershell install
-  dsc_service{'wuauserv':
-    dsc_startuptype => 'Automatic',
-    dsc_name => 'wuauserv',
-    dsc_state  => 'Running'
   }
 
   # windows-base
