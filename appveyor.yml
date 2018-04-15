@@ -16,6 +16,7 @@ install:
 - SET PATH=C:\Program Files\Puppet Labs\Puppet\bin;C:\Ruby%RUBY_VER%\bin;%PATH%
 - ps: |
     dism /online /get-features
+    dism /online /Enable-Feature /FeatureName:ManagementOdata
     $msiPath = "$($env:USERPROFILE)\puppet-agent-5.4.0-x64.msi"
     (New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.4.0-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q /L* c:\install-puppet.log
@@ -61,8 +62,15 @@ on_finish:
     Get-ChildItem -Path "HKU:\*\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
     Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Office\16.0\Common\COM Compatibility\{0002CE02-0000- 0000-C000-000000000046}"
     Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server"
-    Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
     True
+- ps: |
+    Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
+    Get-DscConfigurationStatus -All
+    Get-DscResource MSFT_RoleResource
+    Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
+    True
+- ps: Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration"
+- ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
 
