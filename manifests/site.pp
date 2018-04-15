@@ -77,7 +77,7 @@ node default {
     source  => "c:/projects/puppet-meta-harden-windows/files/sysmonconfig-export.xml",
   }
   exec { 'Load sysmon config':
-    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
   }
 
   # logging
