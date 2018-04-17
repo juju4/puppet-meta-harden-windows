@@ -453,6 +453,62 @@ node default {
     data       => 1,
   }
 
+  # tls12
+  $proto_enable = ['TLS 1.2']
+  $proto_disable = ['SSL 2.0', 'SSL 3.0']
+  $proto_enable.each |String $proto| {
+    dsc_registry {"Client-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+    }
+    dsc_registry {"Client-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '1',
+    }
+    dsc_registry {"Server-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+    }
+    dsc_registry {"Server-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '1',
+    }
+  }
+  $proto_disable.each |String $proto| {
+    dsc_registry {"Client-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+    }
+    dsc_registry {"Client-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '0',
+    }
+    dsc_registry {"Server-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+    }
+    dsc_registry {"Server-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '0',
+    }
+  }
+
   # https://technet.microsoft.com/en-us/library/cc976700.aspx
   # divergence between roles and inspec test
   local_security_policy { 'Access this computer from the network':
