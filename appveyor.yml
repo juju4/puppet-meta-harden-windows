@@ -41,6 +41,7 @@ install:
     $msiPath = "$($env:USERPROFILE)\inspec-2.0.17-1-x64.msi"
     (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.0.17/windows/2016/inspec-2.0.17-1-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q
+- cmd: git.exe clone https://github.com/iadgov/Secure-Host-Baseline.git "$($env:USERPROFILE)\Secure-Host-Baseline"
 
 build: off
 
@@ -75,6 +76,11 @@ on_finish:
     True
 - ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
 - ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels"
+- ps: |
+    "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts\iad-audit-policies.ps1" | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt"
+    (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern WARNING).length
+    (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern FAILED).length
+    True
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
 
