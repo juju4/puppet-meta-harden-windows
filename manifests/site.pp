@@ -554,4 +554,53 @@ node default {
     command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
   }
 
+  # stig/iadgov
+  registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI\EnumerateAdministrators':
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
+  registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+  registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\Terminal Services\fDisableCdm':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters\RequireSecuritySignature':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\UseMachineId':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0\allownullsessionfallback':
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
+    ensure     => present,
+    type       => dword,
+    data       => 0,
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LDAP\LDAPClientIntegrity':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
 }
