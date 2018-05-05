@@ -667,7 +667,7 @@ node default {
   # acl permissions
   acl { 'c:/':
     permissions => [
-     { identity => 'Administrator', rights => ['full'] },
+     { identity => 'Administrators', rights => ['full'] },
      { identity => 'SYSTEM', rights => ['full'] },
      { identity => 'Users', rights => ['read','execute'] },
      { identity => 'Authenticated Users', rights => ['modify'] },
