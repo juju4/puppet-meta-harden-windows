@@ -627,7 +627,8 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
     dsc_valuename => 'allownullsessionfallback',
-    dsc_valuedata => 0,
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
   }
 
 #  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
