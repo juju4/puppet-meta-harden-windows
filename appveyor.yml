@@ -9,6 +9,7 @@ init:
 - 'mkdir C:\ProgramData\PuppetLabs\facter && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\hiera && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\puppet\var && exit 0'
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 matrix:
   fast_finish: true
 
@@ -83,6 +84,7 @@ on_finish:
     True
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
 - cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
+- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 on_failure:
 - cmd: puppet module list --tree
