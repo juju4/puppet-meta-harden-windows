@@ -117,7 +117,7 @@ node default {
       dsc_ensure => 'Present',
       dsc_key => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
       dsc_valuename => 'MaxSize',
-      dsc_valuedata => '536870912',
+      dsc_valuedata => 536870912,
     }
   }
 
@@ -566,7 +566,7 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
     dsc_valuename => 'EnumerateAdministrators',
-    dsc_valuedata => '0',
+    dsc_valuedata => 0,
   }
 
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry':
@@ -584,7 +584,7 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services',
     dsc_valuename => 'fDisableCdm',
-    dsc_valuedata => '1',
+    dsc_valuedata => 1,
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters\RequireSecuritySignature':
@@ -611,7 +611,7 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
     dsc_valuename => 'allownullsessionfallback',
-    dsc_valuedata => '0',
+    dsc_valuedata => 0,
   }
 
 #  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
@@ -623,7 +623,7 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
     dsc_valuename => 'AllowOnlineID',
-    dsc_valuedata => '0',
+    dsc_valuedata => 0,
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LDAP\LDAPClientIntegrity':
