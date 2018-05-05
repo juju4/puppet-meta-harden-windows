@@ -79,6 +79,7 @@ on_finish:
     True
 - ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
 - ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels"
+- ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
 - ps: Get-ChildItem -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts"
 - ps: |
     Set-Location -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts" -PassThru
