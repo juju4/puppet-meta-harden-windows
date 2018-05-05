@@ -83,7 +83,7 @@ on_finish:
     Set-Location -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts" -PassThru
     Import-Module -Name .\Compliance.psm1
     #Test-Compliance -Path '..\..\Adobe Reader\Compliance\AdobeReaderDC.audit'
-    Test-Compliance -Path '..\..\Chrome\Compliance\GoogleChrome.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
+    Test-Compliance -Path '..\..\Chrome\Compliance\GoogleChrome.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt"
     Test-Compliance -Path '..\..\EMET\\Compliance\EMET_5.5.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
     Test-Compliance -Path '..\..\Internet Explorer\Compliance\InternetExplorer11.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
     Test-Compliance -Path '..\..\Windows\Compliance\Windows10.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
