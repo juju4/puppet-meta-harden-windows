@@ -83,10 +83,10 @@ on_finish:
     Set-Location -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts" -PassThru
     Import-Module -Name .\Compliance.psm1
     #Test-Compliance -Path '..\..\Adobe Reader\Compliance\AdobeReaderDC.audit'
-    Test-Compliance -Path '..\..\Chrome\Compliance\GoogleChrome.audit' | Set-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
-    Test-Compliance -Path '..\..\EMET\\Compliance\EMET_5.5.audit' | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
-    Test-Compliance -Path '..\..\Internet Explorer\Compliance\InternetExplorer11.audit' | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
-    Test-Compliance -Path '..\..\Windows\Compliance\Windows10.audit' | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    Test-Compliance -Path '..\..\Chrome\Compliance\GoogleChrome.audit' 2>&1 | Set-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    Test-Compliance -Path '..\..\EMET\\Compliance\EMET_5.5.audit' 2>&1 | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    Test-Compliance -Path '..\..\Internet Explorer\Compliance\InternetExplorer11.audit' 2>&1 | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    Test-Compliance -Path '..\..\Windows\Compliance\Windows10.audit' 2>&1 | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
     True
 - ps: |
     get-content "$($env:USERPROFILE)\iad-audit.txt"
