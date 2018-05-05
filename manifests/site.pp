@@ -78,7 +78,7 @@ node default {
   }
   exec { 'Load sysmon config':
     command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
-    onlyif    => 'dir "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe"'
+    onlyif    => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
   }
 
   # logging
