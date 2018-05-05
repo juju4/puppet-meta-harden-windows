@@ -574,10 +574,16 @@ node default {
     data       => 1,
   }
 
-  registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\Terminal Services\fDisableCdm':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+#  registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\Terminal Services\fDisableCdm':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 1,
+#  }
+  dsc_registry {"fDisableCdm":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM\Software\Policies\Microsoft\Windows NT\Terminal Services',
+    dsc_valuename => 'fDisableCdm',
+    dsc_valuedata => '1',
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters\RequireSecuritySignature':
