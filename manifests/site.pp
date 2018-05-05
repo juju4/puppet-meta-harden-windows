@@ -593,11 +593,23 @@ node default {
 #    type       => dword,
 #    data       => 0,
 #  }
+  dsc_registry {"allownullsessionfallback":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
+    dsc_valuename => 'allownullsessionfallback',
+    dsc_valuedata => '0',
+  }
 
-  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+#  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 0,
+#  }
+  dsc_registry {"AllowOnlineID":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
+    dsc_valuename => 'AllowOnlineID',
+    dsc_valuedata => '0',
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LDAP\LDAPClientIntegrity':
