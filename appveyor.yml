@@ -89,7 +89,7 @@ on_finish:
 on_failure:
 - cmd: puppet module list --tree
 - ps: $PSVersionTable.PSVersion
-- ps: Get-Content "C:\Windows\Logs\DISM\dism.log"
+- ps: Get-Content -tail 1000 "C:\Windows\Logs\DISM\dism.log"
 
 notifications:
 - provider: Email
