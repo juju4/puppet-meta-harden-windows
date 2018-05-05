@@ -460,25 +460,25 @@ node default {
   $proto_enable.each |String $proto| {
     dsc_registry {"Client-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Client-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '1',
     }
     dsc_registry {"Server-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Server-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '1',
     }
@@ -486,25 +486,25 @@ node default {
   $proto_disable.each |String $proto| {
     dsc_registry {"Client-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Client-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '0',
     }
     dsc_registry {"Server-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Server-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '0',
     }
@@ -564,7 +564,7 @@ node default {
 #  }
   dsc_registry {"EnumerateAdministrators":
     dsc_ensure => 'Present',
-    dsc_key => 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
+    dsc_key => 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
     dsc_valuename => 'EnumerateAdministrators',
     dsc_valuedata => '0',
   }
@@ -582,7 +582,7 @@ node default {
 #  }
   dsc_registry {"fDisableCdm":
     dsc_ensure => 'Present',
-    dsc_key => 'HKLM\Software\Policies\Microsoft\Windows NT\Terminal Services',
+    dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services',
     dsc_valuename => 'fDisableCdm',
     dsc_valuedata => '1',
   }
@@ -609,7 +609,7 @@ node default {
 #  }
   dsc_registry {"allownullsessionfallback":
     dsc_ensure => 'Present',
-    dsc_key => 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
     dsc_valuename => 'allownullsessionfallback',
     dsc_valuedata => '0',
   }
@@ -621,7 +621,7 @@ node default {
 #  }
   dsc_registry {"AllowOnlineID":
     dsc_ensure => 'Present',
-    dsc_key => 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
     dsc_valuename => 'AllowOnlineID',
     dsc_valuedata => '0',
   }
