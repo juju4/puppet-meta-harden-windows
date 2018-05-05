@@ -124,6 +124,7 @@ node default {
       dsc_key => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
       dsc_valuename => 'MaxSize',
       dsc_valuedata => '536870912',
+      dsc_valuetype => 'Dword',
     }
   }
 
