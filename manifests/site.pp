@@ -469,6 +469,7 @@ node default {
       dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
+      dsc_valuetype => 'Dword',
     }
     dsc_registry {"Client-${proto}-Enabled":
       dsc_ensure => 'Present',
@@ -579,7 +580,8 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
     dsc_valuename => 'EnumerateAdministrators',
-    dsc_valuedata => 0,
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
   }
 
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry':
@@ -597,7 +599,8 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services',
     dsc_valuename => 'fDisableCdm',
-    dsc_valuedata => 1,
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters\RequireSecuritySignature':
@@ -636,7 +639,8 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
     dsc_valuename => 'AllowOnlineID',
-    dsc_valuedata => 0,
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LDAP\LDAPClientIntegrity':
