@@ -42,7 +42,7 @@ install:
     $msiPath = "$($env:USERPROFILE)\inspec-2.0.17-1-x64.msi"
     (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.0.17/windows/2016/inspec-2.0.17-1-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q
-- cmd: git.exe clone https://github.com/iadgov/Secure-Host-Baseline.git "$($env:USERPROFILE)\Secure-Host-Baseline"
+- cmd: git.exe clone https://github.com/iadgov/Secure-Host-Baseline.git "%USERPROFILE%\Secure-Host-Baseline"
 
 build: off
 
