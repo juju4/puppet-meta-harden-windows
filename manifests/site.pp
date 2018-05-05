@@ -459,25 +459,25 @@ node default {
   $proto_enable.each |String $proto| {
     dsc_registry {"Client-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Client-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '1',
     }
     dsc_registry {"Server-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Server-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '1',
     }
@@ -485,25 +485,25 @@ node default {
   $proto_disable.each |String $proto| {
     dsc_registry {"Client-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Client-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Client",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '0',
     }
     dsc_registry {"Server-${proto}-DisabledByDefault":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
     }
     dsc_registry {"Server-${proto}-Enabled":
       dsc_ensure => 'Present',
-      dsc_key => "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\${proto}\Server",
+      dsc_key => "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '0',
     }
