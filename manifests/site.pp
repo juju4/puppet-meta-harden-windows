@@ -642,13 +642,13 @@ node default {
   dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - NETLOGON":
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
-    dsc_valuename => ''\\*\NETLOGON',
+    dsc_valuename => '\\*\NETLOGON',
     dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
   }
   dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - SYSVOL":
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
-    dsc_valuename => ''\\*\SYSVOL',
+    dsc_valuename => '\\*\SYSVOL',
     dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
   }
 
