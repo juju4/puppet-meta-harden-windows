@@ -101,6 +101,12 @@ node default {
     max_log_policy => 'overwrite'
   }
 
+  windows_eventlog { 'Setup':
+    log_path => '%SystemRoot%\system32\winevt\Logs\Setup.evtx',
+    log_size => '536870912',
+    max_log_policy => 'overwrite'
+  }
+
   windows_eventlog { 'Windows Powershell':
     log_size => '536870912',
     max_log_policy => 'overwrite'
