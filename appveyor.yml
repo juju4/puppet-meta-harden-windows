@@ -78,8 +78,17 @@ on_finish:
     True
 - ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
 - ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels"
+- ps: Get-ChildItem -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts"
 - ps: |
-    "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts\iad-audit-policies.ps1" | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt"
+    Set-Location -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts" -PassThru
+    Import-Module -Name .\Compliance.psm1
+    #Test-Compliance -Path '..\..\Adobe Reader\Compliance\AdobeReaderDC.audit'
+    Test-Compliance -Path '..\..\Chrome\Compliance\GoogleChrome.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
+    Test-Compliance -Path '..\..\EMET\\Compliance\EMET_5.5.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
+    Test-Compliance -Path '..\..\Internet Explorer\Compliance\InternetExplorer11.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
+    Test-Compliance -Path '..\..\Windows\Compliance\Windows10.audit' | Tee-Object -FilePath "$($env:USERPROFILE)\iad-audit.txt" -Append
+    True
+- ps: |
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern WARNING).length
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern FAILED).length
     True
