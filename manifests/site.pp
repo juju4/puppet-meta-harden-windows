@@ -555,10 +555,17 @@ node default {
   }
 
   # stig/iadgov
-  registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI\EnumerateAdministrators':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+# FIXME! Munging failed
+#  registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI\EnumerateAdministrators':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 0,
+#  }
+  dsc_registry {"EnumerateAdministrators":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
+    dsc_valuename => 'EnumerateAdministrators',
+    dsc_valuedata => '0',
   }
 
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry':
