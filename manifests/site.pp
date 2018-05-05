@@ -675,4 +675,28 @@ node default {
     purge => 'false',
   }
 
+  reg_acl { 'hklm:software',
+    owner => 'Administrator',
+    permissions =>
+      [
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+      ],
+   }
+
+  reg_acl { 'hklm:system',
+    owner => 'Administrator',
+    permissions =>
+      [
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+      ],
+   }
+
 }

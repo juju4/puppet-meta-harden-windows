@@ -37,6 +37,7 @@ install:
     puppet module install puppet-archive
     puppet module install autostructure-harden_windows_server
     puppet module install ocastle-win_service
+    puppet module install ipcrm-registry_acl
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: Copy-Item "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource" -Destination "C:\Program Files\WindowsPowerShell\Modules" -Recurse -Container
 - ps: |
