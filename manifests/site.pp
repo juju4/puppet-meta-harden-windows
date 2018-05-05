@@ -674,6 +674,7 @@ node default {
      { identity => 'Authenticated Users', rights => ['modify'] },
     ],
     purge => 'false',
+    inherit_parent_permissions => false,
   }
 
   reg_acl { 'hklm:software':
