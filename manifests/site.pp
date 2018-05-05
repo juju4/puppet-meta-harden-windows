@@ -632,4 +632,18 @@ node default {
     data       => 1,
   }
 
+  # empty rule: ensure_hardened_unc_paths_is_set_to_enabled_with_require_mutual_authentication_and_require_integrity_for_all_netlogon_and_sysvol_shares
+  dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - NETLOGON":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
+    dsc_valuename => ''\\*\NETLOGON',
+    dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
+  }
+  dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - SYSVOL":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
+    dsc_valuename => ''\\*\SYSVOL',
+    dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
+  }
+
 }
