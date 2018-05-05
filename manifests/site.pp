@@ -666,16 +666,16 @@ node default {
   }
 
   # acl permissions
-  acl { 'c:/':
-    permissions => [
-     { identity => 'Administrators', rights => ['full'] },
-     { identity => 'SYSTEM', rights => ['full'] },
-     { identity => 'Users', rights => ['read','execute'] },
-     { identity => 'Authenticated Users', rights => ['modify'] },
-    ],
-    purge => 'false',
-    inherit_parent_permissions => false,
-  }
+#  acl { 'c:/':
+#    permissions => [
+#     { identity => 'Administrators', rights => ['full'] },
+#     { identity => 'SYSTEM', rights => ['full'] },
+#     { identity => 'Users', rights => ['read','execute'] },
+#     { identity => 'Authenticated Users', rights => ['modify'] },
+#    ],
+#    purge => 'false',
+#    inherit_parent_permissions => false,
+#  }
 
   reg_acl { 'hklm:software':
     owner => 'Administrator',
