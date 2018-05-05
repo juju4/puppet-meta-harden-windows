@@ -669,9 +669,9 @@ node default {
     permissions => [
      { identity => 'Administrator', rights => ['full'] },
      { identity => 'SYSTEM', rights => ['full'] },
-     { identity => 'Users', rights => ['read','execute'] }
-     { identity => 'Authenticated Users', rights => ['modify'] }
-   ],
+     { identity => 'Users', rights => ['read','execute'] },
+     { identity => 'Authenticated Users', rights => ['modify'] },
+    ],
     purge => 'false',
   }
 
