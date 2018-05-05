@@ -675,7 +675,7 @@ node default {
     purge => 'false',
   }
 
-  reg_acl { 'hklm:software',
+  reg_acl { 'hklm:software':
     owner => 'Administrator',
     permissions =>
       [
@@ -687,7 +687,7 @@ node default {
       ],
    }
 
-  reg_acl { 'hklm:system',
+  reg_acl { 'hklm:system':
     owner => 'Administrator',
     permissions =>
       [
