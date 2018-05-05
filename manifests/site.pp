@@ -585,11 +585,14 @@ node default {
     data       => 1,
   }
 
-  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0\allownullsessionfallback':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
-  }
+# FIXME!
+# https://tickets.puppetlabs.com/browse/MODULES-3195
+# https://tickets.puppetlabs.com/browse/MODULES-5011
+#  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0\allownullsessionfallback':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 0,
+#  }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
     ensure     => present,
