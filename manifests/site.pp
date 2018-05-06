@@ -43,9 +43,45 @@ node default {
     ensure_microsoft_support_diagnostic_tool_turn_on_msdt_interactive_communication_with_support_provider_is_set_to_disabled => true,
     ensure_enable_disable_perftrack_is_set_to_disabled => true,
     ensure_enable_windows_ntp_client_is_set_to_enabled => true,
-    ensure_enable_windows_ntp_server_is_set_to_disabled => true
+    ensure_enable_windows_ntp_server_is_set_to_disabled => true,
+
+    # re-evaluate. some might be defined later
+    ensure_add_workstations_to_domain_is_set_to_administrators => true,
+    configure_allow_log_on_through_remote_desktop_services => false,
+    ensure_act_as_part_of_the_operating_system_is_set_to_no_one => false,
+    configure_access_this_computer_from_the_network => false,
+    ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
   }
 
+  # requirement for powershell install
+  dsc_service{'wuauserv':
+    dsc_startuptype => 'Automatic',
+    dsc_name => 'wuauserv',
+    dsc_state  => 'Running'
+  }
+
+  # chocolatey install (default for Windows)
+  $chocolatey_packages = ['powershell', 'sysmon', 'osquery', 'git', 'sysinternals' ]
+  $chocolatey_packages.each |String $pkg| {
+    package { "${pkg}":
+      ensure   => latest,
+      provider => chocolatey,
+#      source   => 'https://<internal_repo>/chocolatey',
+    }
+  }
+
+  file { 'sysmonconfig.xml':
+    path    => 'c:/windows/temp/sysmonconfig.xml',
+    ensure  => file,
+#    source  => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
+    source  => "c:/projects/puppet-meta-harden-windows/files/sysmonconfig-export.xml",
+  }
+  exec { 'Load sysmon config':
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
+    onlyif    => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
+  }
+
+  # logging
   windows_eventlog { 'Application':
     log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
     # 512MB
@@ -54,23 +90,41 @@ node default {
   }
 
   windows_eventlog { 'System':
-    log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
+    log_path => '%SystemRoot%\system32\winevt\Logs\System.evtx',
     log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'Security':
-    log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
+    log_path => '%SystemRoot%\system32\winevt\Logs\Security.evtx',
     log_size => '536870912',
     max_log_policy => 'overwrite'
   }
 
-  # FIXME!
-  $eventlogs = ['Windows PowerShell', 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-WMI-Activity/Operational', 'Microsoft-Windows-Sysmon/Operational', 'Microsoft-Windows-AppLocker/EXE and DLL', 'Microsoft-Windows-AppLocker/MSI and Script', 'Microsoft-Windows-AppLocker/Packaged app-Deployment', 'Microsoft-Windows-AppLocker/Packaged app-Execution', 'Microsoft-Windows-TaskScheduler/Operational', 'Microsoft-Windows-DNS-Client/Operational' ]
+  windows_eventlog { 'Setup':
+    log_path => '%SystemRoot%\system32\winevt\Logs\Setup.evtx',
+    log_size => '536870912',
+    max_log_policy => 'overwrite'
+  }
+
+  windows_eventlog { 'Windows Powershell':
+    log_size => '536870912',
+    max_log_policy => 'overwrite'
+  }
+
+  $eventlogs = [ 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-WMI-Activity/Operational', 'Microsoft-Windows-Sysmon/Operational', 'Microsoft-Windows-AppLocker/EXE and DLL', 'Microsoft-Windows-AppLocker/MSI and Script', 'Microsoft-Windows-AppLocker/Packaged app-Deployment', 'Microsoft-Windows-AppLocker/Packaged app-Execution', 'Microsoft-Windows-TaskScheduler/Operational', 'Microsoft-Windows-DNS-Client/Operational' ]
   $eventlogs.each |String $log| {
-    windows_eventlog { "${log}":
-      log_size => '536870912',
-      max_log_policy => 'overwrite'
+    # FIXME!
+#    windows_eventlog { "${log}":
+#      log_size => '536870912',
+#      max_log_policy => 'overwrite'
+#    }
+    dsc_registry {"${log}":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
+      dsc_valuename => 'MaxSize',
+      dsc_valuedata => '536870912',
+      dsc_valuetype => 'Dword',
     }
   }
 
@@ -102,6 +156,16 @@ node default {
 #       binary_path_name   => 'C:\Windows\system32\svchost.exe -k LocalService',
 #       start_type         => 'disabled',
 #  }
+  dsc_service{'iphlpsvc':
+    dsc_startuptype => 'Disabled',
+    dsc_name => 'iphlpsvc',
+    dsc_state  => 'stopped'
+  }
+  dsc_service{'WinHttpAutoProxySvc':
+    dsc_startuptype => 'Disabled',
+    dsc_name => 'WinHttpAutoProxySvc',
+    dsc_state  => 'stopped'
+  }
 
   # windows-base
   registry_value { 'HKLM\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionShares':
@@ -166,6 +230,39 @@ node default {
     data       => 1,
   }
 
+  # windows-account
+  local_security_policy { 'Allow log on through Remote Desktop Services':
+    ensure         => 'present',
+    policy_setting => 'SeRemoteInteractiveLogonRight',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-5-32-544',
+  }
+
+  # cis-access-cred-manager
+  local_security_policy { 'Access Credential Manager as a trusted caller':
+    ensure         => 'present',
+    policy_setting => 'SeTrustedCredManAccessPrivilege',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-0-0',
+  }
+
+  # cis-act-as-os
+  local_security_policy { 'Act as part of the operating system':
+    ensure         => 'present',
+    policy_setting => 'SeTcbPrivilege',
+    policy_type    => 'Privilege Rights',
+    policy_value   => '*S-1-0-0',
+  }
+
+  # cis-add-workstations (harden_windows_server: ensure_add_workstations_to_domain_is_set_to_administrators)
+  # FIXME! still not applied
+#  local_security_policy { 'Add workstations to domain':
+#    ensure         => 'present',
+#    policy_setting => 'SeMachineAccountPrivilege',
+#    policy_type    => 'Privilege Rights',
+#    policy_value   => '*S-1-5-32-544',
+#  }
+
   # llmnr-101: LLMNR mitigations
   registry_key { 'HKLM\Software\Policies\Microsoft\Windows NT\DNSClient':
     ensure => present,
@@ -228,9 +325,13 @@ node default {
     type       => dword,
     data       => 1,
   }
-  # FIXME!
+  # FIXME! nok windowsfeature, nok dsc_windowsfeature...
   windowsfeature { 'MicrosoftWindowsPowerShellV2':
     ensure => absent,
+  }
+  dsc_windowsfeature {'MicrosoftWindowsPowerShellV2':
+    dsc_ensure => 'absent',
+    dsc_name   => 'MicrosoftWindowsPowerShellV2',
   }
 
   # microsoft-online-accounts: Microsoft Online Accounts
@@ -286,8 +387,10 @@ node default {
   }
 
   # wsh-101: Review potentially dangerous extensions association
-#  $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
-#  $dangerousext.each |String $ext| {
+  # puppetlabs/registry: Limitations: Keys within HKEY_LOCAL_MACHINE (hklm), HKEY_CLASSES_ROOT (hkcr) or HKEY_USERS (hku) are supported. Other predefined root keys (e.g., HKEY_CURRENT_USER) are not currently supported.
+  # puppetlabs/dsc: DSC Resources are executed under the SYSTEM context by default, which means you are unable to access any user level Registry key without providing alternate credentials.
+  $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
+  $dangerousext.each |String $ext| {
 #    registry_value { "Extension ${ext}":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
 #      ensure     => present,
@@ -302,10 +405,22 @@ node default {
 #      type       => string,
 #      data       => '%windir%\system32\notepad.exe',
 #    }
-#  }
-#
-#  $dangerousextcmd = ['HKCR\\htafile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\edit\\command', 'HKCR\\VBSFile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\open2\\command', 'HKCR\\VBEFile\\shell\\edit\\command', 'HKCR\\VBEFile\\shell\\open\\command', 'HKCR\\VBEFile\\shell\\open2\\command', 'HKCR\\JSFile\\shell\\open\\command', 'HKCR\\JSEFile\\shell\\open\\command', 'HKCR\\wshfile\\shell\\open\\command', 'HKCR\\scriptletfile\\shell\\open\\command' ]
-#  $dangerousextcmd.each |String $extcmd| {
+    dsc_registry {"registry_ext_${ext}":
+      dsc_ensure => 'Present',
+      dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
+      dsc_valuename => '(default)',
+      dsc_valuedata => '%windir%\system32\notepad.exe',
+    }
+    dsc_registry {"registry_ext_${ext}_OpenWithList":
+      dsc_ensure => 'Present',
+      dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
+      dsc_valuename => 'a',
+      dsc_valuedata => '%windir%\system32\notepad.exe',
+    }
+  }
+
+  $dangerousextcmd = ['HKCR:\\htafile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\edit\\command', 'HKCR:\\VBSFile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\open2\\command', 'HKCR:\\VBEFile\\shell\\edit\\command', 'HKCR:\\VBEFile\\shell\\open\\command', 'HKCR:\\VBEFile\\shell\\open2\\command', 'HKCR:\\JSFile\\shell\\open\\command', 'HKCR:\\JSEFile\\shell\\open\\command', 'HKCR:\\wshfile\\shell\\open\\command', 'HKCR:\\scriptletfile\\shell\\open\\command' ]
+  $dangerousextcmd.each |String $extcmd| {
 #    registry_value { "Extension ${extcmd}":
 #      path       => "${extcmd}",
 #      ensure     => present,
@@ -313,7 +428,13 @@ node default {
 #      type       => string,
 #      data       => '%windir%\system32\notepad.exe',
 #    }
-#  }
+    dsc_registry {"registry_ext_${extcmd}":
+      dsc_ensure => 'Present',
+      dsc_key => "${extcmd}",
+      dsc_valuename => '(default)',
+      dsc_valuedata => '%windir%\system32\notepad.exe',
+    }
+  }
 
   # services-1: Services to be disabled
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters\SMB1':
@@ -325,6 +446,10 @@ node default {
   windowsfeature { 'SMB1Protocol':
     ensure => absent,
   }
+  dsc_windowsfeature {'SMB1Protocol':
+    dsc_ensure => 'absent',
+    dsc_name   => 'SMB1Protocol',
+  }
 
   # wpad-101: WPAD mitigations
   registry_key { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad':
@@ -335,4 +460,288 @@ node default {
     type       => dword,
     data       => 1,
   }
+
+  # tls12
+  $proto_enable = ['TLS 1.2']
+  $proto_disable = ['SSL 2.0', 'SSL 3.0']
+  $proto_enable.each |String $proto| {
+    dsc_registry {"Client-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+      dsc_valuetype => 'Dword',
+    }
+    dsc_registry {"Client-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '1',
+      dsc_valuetype => 'Dword',
+    }
+    dsc_registry {"Server-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+      dsc_valuetype => 'Dword',
+    }
+    dsc_registry {"Server-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '1',
+      dsc_valuetype => 'Dword',
+    }
+  }
+  $proto_disable.each |String $proto| {
+    dsc_registry {"Client-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+      dsc_valuetype => 'Dword',
+    }
+    dsc_registry {"Client-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '0',
+      dsc_valuetype => 'Dword',
+    }
+    dsc_registry {"Server-${proto}-DisabledByDefault":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_valuename => 'DisabledByDefault',
+      dsc_valuedata => '0',
+      dsc_valuetype => 'Dword',
+    }
+    dsc_registry {"Server-${proto}-Enabled":
+      dsc_ensure => 'Present',
+      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_valuename => 'Enabled',
+      dsc_valuedata => '0',
+      dsc_valuetype => 'Dword',
+    }
+  }
+
+  # https://technet.microsoft.com/en-us/library/cc976700.aspx
+  # divergence between roles and inspec test
+  local_security_policy { 'Access this computer from the network':
+    ensure         => 'present',
+    policy_setting => 'SeNetworkLogonRight',
+    policy_type    => 'Privilege Rights',
+    # harden_windows_server: Administrators, Authenticated users + DC: Enterprise Domain Controllers
+#    policy_value   => '*S-1-5-32-544,*S-1-5-11',
+#    policy_value   => '*S-1-5-32-544,*S-1-5-11,*S-1-5-9',
+    # inspec: nobody
+    policy_value   => '*S-1-0-0',
+  }
+
+   # already in harden_windows_server
+#  local_security_policy { 'Create symbolic links':
+#    ensure         => 'present',
+#    policy_setting => 'SeCreateSymbolicLinkPrivilege',
+#    policy_type    => 'Privilege Rights',
+#    policy_value   => '*S-1-5-32-544',
+#  }
+
+  # msoffice
+
+  # misc
+  file { 'applocker.xml':
+    path    => 'c:/windows/temp/applocker.xml',
+    ensure  => file,
+#    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
+    source  => "c:/projects/puppet-meta-harden-windows/files/applocker.xml",
+  }
+  exec { 'Set-AppLockerPolicy':
+    command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
+    provider  => powershell,
+  }
+
+  file { 'firewall.wfw':
+    path    => 'c:/windows/temp/firewall.wfw',
+    ensure  => file,
+#    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
+    source  => "c:/projects/puppet-meta-harden-windows/files/firewall.wfw",
+  }
+  exec { 'Firewall import':
+    command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
+  }
+
+  # stig/iadgov
+# FIXME! Munging failed
+#  registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI\EnumerateAdministrators':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 0,
+#  }
+  dsc_registry {"EnumerateAdministrators":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
+    dsc_valuename => 'EnumerateAdministrators',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+#  registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\Terminal Services\fDisableCdm':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 1,
+#  }
+  dsc_registry {"fDisableCdm":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services',
+    dsc_valuename => 'fDisableCdm',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters\RequireSecuritySignature':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\UseMachineId':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+# FIXME!
+# https://tickets.puppetlabs.com/browse/MODULES-3195
+# https://tickets.puppetlabs.com/browse/MODULES-5011
+#  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0\allownullsessionfallback':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 0,
+#  }
+  dsc_registry {"allownullsessionfallback":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
+    dsc_valuename => 'allownullsessionfallback',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+#  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
+#    ensure     => present,
+#    type       => dword,
+#    data       => 0,
+#  }
+  dsc_registry {"AllowOnlineID":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
+    dsc_valuename => 'AllowOnlineID',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LDAP\LDAPClientIntegrity':
+    ensure     => present,
+    type       => dword,
+    data       => 1,
+  }
+
+  dsc_registry {"The Windows Remote Management (WinRM) service must not store RunAs credentials.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service',
+    dsc_valuename => 'DisableRunAs',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"InPrivate browsing in Microsoft Edge must be disabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main',
+    dsc_valuename => 'AllowInPrivate',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Unauthenticated RPC clients must be restricted from connecting to the RPC server.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc',
+    dsc_valuename => 'RestrictRemoteClients',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The machine inactivity limit must be set to 15 minutes, locking the system with the screensaver.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
+    dsc_valuename => 'InactivityTimeoutSecs',
+    dsc_valuedata => '900',
+    dsc_valuetype => 'Dword',
+  }
+
+  # empty rule: ensure_hardened_unc_paths_is_set_to_enabled_with_require_mutual_authentication_and_require_integrity_for_all_netlogon_and_sysvol_shares
+  dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - NETLOGON":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
+    dsc_valuename => '\\*\NETLOGON',
+    dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
+  }
+  dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - SYSVOL":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
+    dsc_valuename => '\\*\SYSVOL',
+    dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
+  }
+
+  dsc_registry {"Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters',
+    dsc_valuename => 'SupportedEncryptionTypes',
+    dsc_valuedata => '2147483640',
+    dsc_valuetype => 'Dword',
+  }
+
+  # acl permissions
+  # acl permissions
+#  acl { 'c:/':
+#    permissions => [
+#     { identity => 'Administrators', rights => ['full'] },
+#     { identity => 'SYSTEM', rights => ['full'] },
+#     { identity => 'Users', rights => ['read','execute'] },
+#     { identity => 'Authenticated Users', rights => ['modify'] },
+#    ],
+#    purge => 'false',
+#    inherit_parent_permissions => false,
+#  }
+
+  reg_acl { 'hklm:software':
+    owner => 'Administrator',
+    permissions =>
+      [
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+      ],
+    inherit_from_parent => false,
+   }
+
+  reg_acl { 'hklm:system':
+    owner => 'Administrator',
+    permissions =>
+      [
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+      ],
+    inherit_from_parent => false,
+   }
+
 }

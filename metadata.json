@@ -9,14 +9,17 @@
   "dependencies": [
     {"name":"puppetlabs/powershell","version_requirement":">= 2.1.0 < 6.0.0"},
     {"name":"puppetlabs/registry","version_requirement":">= 2.0.0 < 6.0.0"},
+    {"name":"puppetlabs/dsc","version_requirement":">= 1.5.0 < 6.0.0"},
+    {"name":"puppetlabs/chocolatey","version_requirement":">= 3.0.0 < 6.0.0"},
     {"name":"puppet/windowsfeature","version_requirement":">= 3.0.0 < 6.0.0"},
     {"name":"puppet/windows_firewall","version_requirement":">= 2.0.0 < 6.0.0"},
     {"name":"puppet/windows_autoupdate","version_requirement":">= 2.0.0 < 6.0.0"},
     {"name":"puppet/windows_eventlog","version_requirement":">= 2.0.0 < 6.0.0"},
     {"name":"puppet/msoffice","version_requirement":">= 3.0.0 < 6.0.0"},
     {"name":"puppet/archive","version_requirement":">= 2.0.0 < 6.0.0"},
-    {"name":"puppet/windows_env","version_requirement":">= 3.0.0 < 6.0.0"}
-    {"name":"ocastle/win_service","version_requirement":">= 0.0.10 < 6.0.0"}
+    {"name":"puppet/windows_env","version_requirement":">= 3.0.0 < 6.0.0"},
+    {"name":"ocastle/win_service","version_requirement":">= 0.0.10 < 6.0.0"},
+    {"name":"ipcrm/registry_acl","version_requirement":">= 0.0.5 < 6.0.0"}
   ],
   "data_provider": null,
   "operatingsystem_support": [
