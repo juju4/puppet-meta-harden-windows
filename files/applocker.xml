@@ -112,9 +112,70 @@
         <FilePathCondition Path="%SYSTEM32%\catroot2\*" />
         <FilePathCondition Path="%SYSTEM32%\com\dmp\*" />
         <FilePathCondition Path="%SYSTEM32%\FxsTmp\*" />
+        <FilePathCondition Path="%SYSTEM32%\atbroker.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\atbroker.exe" />
         <FilePathCondition Path="%SYSTEM32%\certutil.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\certutil.exe" />
+        <FilePathCondition Path="%SYSTEM32%\control.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\control.exe" />
+        <FilePathCondition Path="%SYSTEM32%\cscript.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\cscript.exe" />
+        <FilePathCondition Path="%SYSTEM32%\csmtp.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\csmtp.exe" />
+        <FilePathCondition Path="%SYSTEM32%\expand.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\expand.exe" />
+        <FilePathCondition Path="%SYSTEM32%\esentutl.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\esentutl.exe" />
+        <FilePathCondition Path="%WINDIR%\WinSxS\x86_microsoft-windows-e..ageengine-utilities_31bf3856ad364e35_10.0.14393.351_none_b7367f64aad9d46b\esentutl.exe" />
+        <FilePathCondition Path="%SYSTEM32%\extrac32.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\extrac32.exe" />
+        <FilePathCondition Path="%SYSTEM32%\expand.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\expand.exe" />
+        <FilePathCondition Path="%SYSTEM32%\hh.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\hh.exe" />
+        <FilePathCondition Path="%SYSTEM32%\makecab.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\makecab.exe" />
+        <FilePathCondition Path="%SYSTEM32%\mavinject.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\mavinject.exe" />
+        <FilePathCondition Path="%SYSTEM32%\msdt.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\msdt.exe" />
         <FilePathCondition Path="%SYSTEM32%\mshta.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\mshta.exe" />
+        <FilePathCondition Path="%SYSTEM32%\PresentationHost.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\PresentationHost.exe" />
+        <FilePathCondition Path="%SYSTEM32%\odbcconf.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\odbcconf.exe" />
         <FilePathCondition Path="%SYSTEM32%\pcalua.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\pcalua.exe" />
+        <FilePathCondition Path="%WINDIR%\WinSxS\amd64_microsoft-windows-a..atibility-assistant_31bf3856ad364e35_10.0.15063.0_none_44da5f4d5bf5bb92\pcalua.exe" />
+        <FilePathCondition Path="%SYSTEM32%\print.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\print.exe" />
+        <FilePathCondition Path="%SYSTEM32%\psr.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\psr.exe" />
+        <FilePathCondition Path="%SYSTEM32%\qprocess.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework\v2.0.50727\regasm.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework64\v2.0.50727\regasm.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework\v4.0.30319\regasm.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\regasm.exe" />
+        <FilePathCondition Path="%SYSTEM32%\regini.exe" />
+        <FilePathCondition Path="%SYSTEM32%\Register-cimprovider.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\Register-cimprovider.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework\v2.0.50727\regsvcs.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework64\v2.0.50727\regsvcs.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework\v4.0.30319\regsvcs.exe" />
+        <FilePathCondition Path="%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\regsvcs.exe" />
+        <FilePathCondition Path="%SYSTEM32%\regsvr32.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\regsvr32.exe" />
+        <FilePathCondition Path="%WINDIR%\WinSxS\amd64_microsoft-windows-u..ed-telemetry-client_31bf3856ad364e35_10.0.16299.15_none_c2df1bba78111118\Runscripthelper.exe" />
+        <FilePathCondition Path="%WINDIR%\WinSxS\amd64_microsoft-windows-u..ed-telemetry-client_31bf3856ad364e35_10.0.16299.192_none_ad4699b571e00c4a\Runscripthelper.exe" />
+        <FilePathCondition Path="%SYSTEM32%\scriptrunner.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\scriptrunner.exe" />
+        <FilePathCondition Path="%SYSTEM32%\SyncAppvPublishingServer.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\SyncAppvPublishingServer.exe" />
+        <FilePathCondition Path="%SYSTEM32%\wscript.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\wscript.exe" />
+        <FilePathCondition Path="%SYSTEM32%\xwizard.exe" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\xwizard.exe" />
         <FilePathCondition Path="%SYSTEM32%\spool\drivers\color\*" />
         <FilePathCondition Path="%SYSTEM32%\spool\PRINTERS\*" />
         <FilePathCondition Path="%SYSTEM32%\spool\SERVERS\*" />
@@ -142,7 +203,6 @@
         <FilePathCondition Path="%WINDIR%\twain_32\*" />
         <FilePathCondition Path="%WINDIR%\Vss\*" />
         <FilePathCondition Path="%WINDIR%\Web\*" />
-        <FilePathCondition Path="%WINDIR%\WinSxS\amd64_microsoft-windows-a..atibility-assistant_31bf3856ad364e35_10.0.15063.0_none_44da5f4d5bf5bb92\pcalua.exe" />
       </Exceptions>
     </FilePathRule>
     <FilePathRule Id="7cc5dda9-9641-467a-8efd-c0856abb9d66" Name="Allow chocolatey bin/choco.exe (ProgramData)" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
@@ -207,11 +267,6 @@
     <FilePathRule Id="7cba8496-1311-4984-9767-a283db86e87c" Name="Allow sysinternals tools through chocolatey" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
       <Conditions>
         <FilePathCondition Path="%OSDRIVE%\ProgramData\chocolatey\lib\sysinternals\tools\*" />
-      </Conditions>
-    </FilePathRule>
-    <FilePathRule Id="2cd280a4-1d0c-4f82-9f67-752b1778b7ad" Name="Allow Ansible temp folder execution" Description="Should be restricted to one user and only for play duration" UserOrGroupSid="S-1-5-32-544" Action="Allow">
-      <Conditions>
-        <FilePathCondition Path="%OSDRIVE%\ansible\temp\*" />
       </Conditions>
     </FilePathRule>
     <FilePathRule Id="c151e209-bc47-4029-b8ba-2131ea645e68" Name="%OSDRIVE%\temp\*" Description="" UserOrGroupSid="S-1-1-0" Action="Deny">
@@ -432,6 +487,13 @@
         <FilePathCondition Path="%OSDRIVE%\opscode\inspec\*" />
       </Conditions>
     </FilePathRule>
+    <FilePublisherRule Id="d255ee68-8db2-4698-9707-f59d3bf42396" Name="Allow Microsoft Onedrive (FILESYNCCONFIG.EXE)" Description="from user AppData folder" UserOrGroupSid="S-1-1-0" Action="Allow">
+      <Conditions>
+        <FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT ONEDRIVE" BinaryName="FILESYNCCONFIG.EXE">
+          <BinaryVersionRange LowSection="17.3.0.0" HighSection="*" />
+        </FilePublisherCondition>
+      </Conditions>
+    </FilePublisherRule>
     <FilePublisherRule Id="0753c63b-eb80-42ed-894b-5c64a164bf7c" Name="Allow Intel Vulnerability assessment (INTEL-SA-00086-CONSOLE.EXE)" Description="Intel ME vulnerability" UserOrGroupSid="S-1-5-32-544" Action="Allow">
       <Conditions>
         <FilePublisherCondition PublisherName="O=INTEL CORPORATION, L=SANTA CLARA, S=CA, C=US" ProductName="INTEL-SA-00086-CLI" BinaryName="INTEL-SA-00086-CONSOLE.EXE">
@@ -452,7 +514,7 @@
       </Conditions>
     </FilePathRule>
   </RuleCollection>
-  <RuleCollection Type="Script" EnforcementMode="AuditOnly">
+  <RuleCollection Type="Script" EnforcementMode="NotConfigured">
     <FilePathRule Id="007fba76-c11b-4f5b-ae09-4797e67c81ea" Name="%OSDRIVE%\Users\%USERPROFILE%\Appdata\*.hta" Description="" UserOrGroupSid="S-1-1-0" Action="Deny">
       <Conditions>
         <FilePathCondition Path="%OSDRIVE%\Users\%USERPROFILE%\Appdata\*.hta" />
