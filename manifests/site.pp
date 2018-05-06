@@ -687,6 +687,7 @@ node default {
         {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
         {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
       ],
+    inherit_from_parent => false,
    }
 
   reg_acl { 'hklm:system':
@@ -699,6 +700,7 @@ node default {
         {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
         {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
       ],
+    inherit_from_parent => false,
    }
 
 }
