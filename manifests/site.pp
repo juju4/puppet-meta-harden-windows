@@ -675,6 +675,14 @@ node default {
     dsc_valuetype => 'Dword',
   }
 
+  dsc_registry {"The machine inactivity limit must be set to 15 minutes, locking the system with the screensaver.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
+    dsc_valuename => 'InactivityTimeoutSecs',
+    dsc_valuedata => '900',
+    dsc_valuetype => 'Dword',
+  }
+
   # empty rule: ensure_hardened_unc_paths_is_set_to_enabled_with_require_mutual_authentication_and_require_integrity_for_all_netlogon_and_sysvol_shares
   dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - NETLOGON":
     dsc_ensure => 'Present',
