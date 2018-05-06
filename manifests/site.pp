@@ -665,6 +665,15 @@ node default {
     dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
   }
 
+  dsc_registry {"Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters',
+    dsc_valuename => 'SupportedEncryptionTypes',
+    dsc_valuedata => '2147483640',
+    dsc_valuetype => 'Dword',
+  }
+
+  # acl permissions
   # acl permissions
 #  acl { 'c:/':
 #    permissions => [
