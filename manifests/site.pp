@@ -651,6 +651,30 @@ node default {
     data       => 1,
   }
 
+  dsc_registry {"The Windows Remote Management (WinRM) service must not store RunAs credentials.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service',
+    dsc_valuename => 'DisableRunAs',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"InPrivate browsing in Microsoft Edge must be disabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main',
+    dsc_valuename => 'AllowInPrivate',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Unauthenticated RPC clients must be restricted from connecting to the RPC server.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc',
+    dsc_valuename => 'RestrictRemoteClients',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
   # empty rule: ensure_hardened_unc_paths_is_set_to_enabled_with_require_mutual_authentication_and_require_integrity_for_all_netlogon_and_sysvol_shares
   dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - NETLOGON":
     dsc_ensure => 'Present',
