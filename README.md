@@ -15,11 +15,12 @@ This module is targeted for Windows.
 
 ## Continuous integration
 
-you can test this role with Appveyor.
+you can test this role with Appveyor or Vagrant.
 
 ## Troubleshooting & Known issues
 
-N/A
+* vagrant execution
+It requires few changes like allow vagrant network login to execute. Check site.pp.
 
 ## License
 

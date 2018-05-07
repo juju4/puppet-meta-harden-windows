@@ -1,5 +1,6 @@
 node default {
   #include windows_autoupdate
+  include chocolatey
 
   class { 'harden_windows_server':
     is_domain_controller => false,
@@ -62,6 +63,8 @@ node default {
 
   # chocolatey install (default for Windows)
   $chocolatey_packages = ['powershell', 'sysmon', 'osquery', 'git', 'sysinternals' ]
+# FIXME! vagrant crash with chocolatey packages install. appveyor OK
+#  $chocolatey_packages = []
   $chocolatey_packages.each |String $pkg| {
     package { "${pkg}":
       ensure   => latest,
@@ -141,9 +144,10 @@ node default {
     description  => 'Inbound rule for Windows Remote Management via WS-Management. [TCP 5985]',
   }
 
-  windowsfeature { 'NET-Framework-Core':
-    ensure => present,
-  }
+  # FIXME! execute fine in appveyor but breaks under vagrant. not really required for security.
+#  windowsfeature { 'NET-Framework-Core':
+#    ensure => present,
+#  }
 
   # FIXME!
 #  win_service { 'iphlpsvc':
@@ -534,8 +538,9 @@ node default {
     # harden_windows_server: Administrators, Authenticated users + DC: Enterprise Domain Controllers
 #    policy_value   => '*S-1-5-32-544,*S-1-5-11',
 #    policy_value   => '*S-1-5-32-544,*S-1-5-11,*S-1-5-9',
-    # inspec: nobody
+    # FIXME! vagrant user needed if vagrant. appveyor ok.
     policy_value   => '*S-1-0-0',
+#    policy_value   => '*S-1-0-0,vagrant',
   }
 
    # already in harden_windows_server
@@ -555,6 +560,7 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
     source  => "c:/projects/puppet-meta-harden-windows/files/applocker.xml",
   }
+  # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Set-AppLockerPolicy':
     command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
     provider  => powershell,
@@ -566,6 +572,7 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
     source  => "c:/projects/puppet-meta-harden-windows/files/firewall.wfw",
   }
+  # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Firewall import':
     command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
   }
@@ -723,6 +730,7 @@ node default {
     permissions =>
       [
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+# FIXME! non-fatal errors at execution
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
         {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
