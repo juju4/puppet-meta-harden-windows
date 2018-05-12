@@ -1,5 +1,6 @@
 node default {
   #include windows_autoupdate
+  include chocolatey
 
   class { 'harden_windows_server':
     is_domain_controller => false,
@@ -62,6 +63,8 @@ node default {
 
   # chocolatey install (default for Windows)
   $chocolatey_packages = ['powershell', 'sysmon', 'osquery', 'git', 'sysinternals' ]
+# FIXME! vagrant crash with chocolatey packages install. appveyor OK
+#  $chocolatey_packages = []
   $chocolatey_packages.each |String $pkg| {
     package { "${pkg}":
       ensure   => latest,
@@ -141,9 +144,10 @@ node default {
     description  => 'Inbound rule for Windows Remote Management via WS-Management. [TCP 5985]',
   }
 
-  windowsfeature { 'NET-Framework-Core':
-    ensure => present,
-  }
+  # FIXME! execute fine in appveyor but breaks under vagrant. not really required for security.
+#  windowsfeature { 'NET-Framework-Core':
+#    ensure => present,
+#  }
 
   # FIXME!
 #  win_service { 'iphlpsvc':
@@ -534,8 +538,9 @@ node default {
     # harden_windows_server: Administrators, Authenticated users + DC: Enterprise Domain Controllers
 #    policy_value   => '*S-1-5-32-544,*S-1-5-11',
 #    policy_value   => '*S-1-5-32-544,*S-1-5-11,*S-1-5-9',
-    # inspec: nobody
+    # FIXME! vagrant user needed if vagrant. appveyor ok.
     policy_value   => '*S-1-0-0',
+#    policy_value   => '*S-1-0-0,vagrant',
   }
 
    # already in harden_windows_server
@@ -555,6 +560,7 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
     source  => "c:/projects/puppet-meta-harden-windows/files/applocker.xml",
   }
+  # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Set-AppLockerPolicy':
     command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
     provider  => powershell,
@@ -566,6 +572,7 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
     source  => "c:/projects/puppet-meta-harden-windows/files/firewall.wfw",
   }
+  # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Firewall import':
     command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
   }
@@ -705,7 +712,166 @@ node default {
     dsc_valuetype => 'Dword',
   }
 
-  # acl permissions
+  dsc_registry {"Camera access from the lock screen must be disabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization',
+    dsc_valuename => 'NoLockScreenCamera',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The display of slide shows on the lock screen must be disabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization',
+    dsc_valuename => 'NoLockScreenSlideshow',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"IPv6 source routing must be configured to highest protection.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters',
+    dsc_valuename => 'DisableIpSourceRouting',
+    dsc_valuedata => '2',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The system must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF) generated routes.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters',
+    dsc_valuename => 'EnableICMPRedirect',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The system must be configured to ignore NetBIOS name release requests except from WINS servers.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Services\Netbt\Parameters',
+    dsc_valuename => 'NoNameReleaseOnDemand',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Insecure logons to an SMB server must be disabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation',
+    dsc_valuename => 'AllowInsecureGuestAuth',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Wi-Fi Sense must be disabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config',
+    dsc_valuename => 'AutoConnectAllowedOEM',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Downloading print driver packages over HTTP must be prevented.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers',
+    dsc_valuename => 'DisableWebPnPDownload',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Web publishing and online ordering wizards must be prevented from downloading a list of providers.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer',
+    dsc_valuename => 'NoWebServices',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Users must be prompted for a password on resume from sleep (on battery).":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51',
+    dsc_valuename => 'DCSettingIndex',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Local users on domain-joined computers must not be enumerated.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
+    dsc_valuename => 'EnumerateLocalUsers',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The network selection user interface (UI) must not be displayed on the logon screen.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
+    dsc_valuename => 'DontDisplayNetworkSelectionUI',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Printing over HTTP must be prevented.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers',
+    dsc_valuename => 'DisableHTTPPrinting',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Users must not be allowed to ignore SmartScreen filter warnings for unverified files in Microsoft Edge.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter',
+    dsc_valuename => 'PreventOverrideAppRepUnknown',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Users must not be allowed to ignore SmartScreen filter warnings for malicious websites in Microsoft Edge.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter',
+    dsc_valuename => 'PreventOverride',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Enhanced anti-spoofing when available must be enabled for facial recognition.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures',
+    dsc_valuename => 'EnhancedAntiSpoofing',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat',
+    dsc_valuename => 'DisableInventory',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The setting to allow Microsoft accounts to be optional for modern style apps must be enabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
+    dsc_valuename => 'MSAOptional',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The minimum pin length for Microsoft Passport for Work must be 6 characters or greater.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork\PINComplexity',
+    dsc_valuename => 'MinimumPINLength',
+    dsc_valuedata => '6',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The use of a hardware security device with Windows Hello for Business must be enabled.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork',
+    dsc_valuename => 'RequireSecurityDevice',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
   # acl permissions
 #  acl { 'c:/':
 #    permissions => [
@@ -723,6 +889,7 @@ node default {
     permissions =>
       [
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+# FIXME! non-fatal errors at execution
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
         {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
