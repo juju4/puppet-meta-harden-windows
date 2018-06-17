@@ -62,7 +62,7 @@ node default {
   }
 
   # chocolatey install (default for Windows)
-  $chocolatey_packages = ['powershell', 'sysmon', 'osquery', 'git', 'sysinternals' ]
+  $chocolatey_packages = ['powershell', 'osquery', 'git', 'sysinternals' ]
 # FIXME! vagrant crash with chocolatey packages install. appveyor OK
 #  $chocolatey_packages = []
   $chocolatey_packages.each |String $pkg| {
@@ -70,6 +70,13 @@ node default {
       ensure   => latest,
       provider => chocolatey,
 #      source   => 'https://<internal_repo>/chocolatey',
+    }
+  }
+  package { "sysmon":
+      ensure   => latest,
+      provider => chocolatey,
+#      source   => 'https://<internal_repo>/chocolatey',
+      install_options   => ['--checksum64 ac11ae45b2f396e10d4790f69eaf426f4795996c2cc305c3c78d12fd4f283b14 --checksum ac11ae45b2f396e10d4790f69eaf426f4795996c2cc305c3c78d12fd4f283b14']
     }
   }
 
