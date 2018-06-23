@@ -73,18 +73,18 @@ on_finish:
     Get-ChildItem -Path "HKU:\*\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
     Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server"
     True
-- ps: |
-    Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
-    Get-DscConfigurationStatus -All
-    True
-- ps: |
-    Get-DscResource MSFT_RoleResource
-    Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
-    True
-- ps: |
-    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources"
-    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource"
-    True
+#- ps: |
+#    Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
+#    Get-DscConfigurationStatus -All
+#    True
+#- ps: |
+#    Get-DscResource MSFT_RoleResource
+#    Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
+#    True
+#- ps: |
+#    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources"
+#    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource"
+#    True
 - ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
 - ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels"
 - ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
