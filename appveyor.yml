@@ -59,10 +59,16 @@ after_test:
 on_finish:
 - ps: |
     Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
+    True
+- ps: |
     Get-PSDrive -PSProvider Registry
     New-PSDrive -Name HKCR -PSProvider Registry -Root Registry::HKEY_CLASSES_ROOT
     Get-ChildItem -Path "HKCR:\htafile\shell\open\command" -Recurse
+    True
+- ps: |
     Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
+    True
+- ps: |
     New-PSDrive -Name HKU -PSProvider Registry -Root Registry::HKEY_USERS
     Get-ChildItem -Path "HKU:\*\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
     Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server"
@@ -70,6 +76,8 @@ on_finish:
 - ps: |
     Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
     Get-DscConfigurationStatus -All
+    True
+- ps: |
     Get-DscResource MSFT_RoleResource
     Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
     True
