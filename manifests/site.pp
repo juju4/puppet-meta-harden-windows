@@ -890,31 +890,31 @@ node default {
 #    inherit_parent_permissions => false,
 #  }
 
-  reg_acl { 'hklm:software':
-    owner => 'Administrator',
-    permissions =>
-      [
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
-# FIXME! non-fatal errors at execution
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
-      ],
-    inherit_from_parent => false,
-   }
-
-  reg_acl { 'hklm:system':
-    owner => 'Administrator',
-    permissions =>
-      [
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
-      ],
-    inherit_from_parent => false,
-   }
+#  reg_acl { 'hklm:software':
+#    owner => 'Administrator',
+#    permissions =>
+#      [
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+## FIXME! non-fatal errors at execution
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+#      ],
+#    inherit_from_parent => false,
+#   }
+#
+#  reg_acl { 'hklm:system':
+#    owner => 'Administrator',
+#    permissions =>
+#      [
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+#      ],
+#    inherit_from_parent => false,
+#   }
 
 }
