@@ -891,7 +891,9 @@ node default {
 #  }
 
   reg_acl { 'hklm:software':
-    owner => 'Administrator',
+#    owner => 'Administrator',
+# from CIS L1
+    owner => 'adminaccount',
     permissions =>
       [
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
@@ -905,7 +907,9 @@ node default {
    }
 
   reg_acl { 'hklm:system':
-    owner => 'Administrator',
+#    owner => 'Administrator',
+# from CIS L1
+    owner => 'adminaccount',
     permissions =>
       [
         {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
