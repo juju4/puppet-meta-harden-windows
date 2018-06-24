@@ -105,9 +105,9 @@ on_finish:
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern FAILED).length
     True
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
-- cmd: |
+- ps: |
     c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
-    echo.
+    True
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 on_failure:
