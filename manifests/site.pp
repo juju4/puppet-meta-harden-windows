@@ -62,7 +62,7 @@ node default {
   }
 
   # chocolatey install (default for Windows)
-  $chocolatey_packages = ['powershell', 'sysmon', 'osquery', 'git', 'sysinternals' ]
+  $chocolatey_packages = ['powershell', 'osquery', 'git', 'sysinternals' ]
 # FIXME! vagrant crash with chocolatey packages install. appveyor OK
 #  $chocolatey_packages = []
   $chocolatey_packages.each |String $pkg| {
@@ -71,6 +71,12 @@ node default {
       provider => chocolatey,
 #      source   => 'https://<internal_repo>/chocolatey',
     }
+  }
+  package { "sysmon":
+      ensure   => latest,
+      provider => chocolatey,
+#      source   => 'https://<internal_repo>/chocolatey',
+      install_options   => ['--checksum64', 'ac11ae45b2f396e10d4790f69eaf426f4795996c2cc305c3c78d12fd4f283b14', '--checksum', 'ac11ae45b2f396e10d4790f69eaf426f4795996c2cc305c3c78d12fd4f283b14']
   }
 
   file { 'sysmonconfig.xml':
@@ -330,13 +336,13 @@ node default {
     data       => 1,
   }
   # FIXME! nok windowsfeature, nok dsc_windowsfeature...
-  windowsfeature { 'MicrosoftWindowsPowerShellV2':
-    ensure => absent,
-  }
-  dsc_windowsfeature {'MicrosoftWindowsPowerShellV2':
-    dsc_ensure => 'absent',
-    dsc_name   => 'MicrosoftWindowsPowerShellV2',
-  }
+#  windowsfeature { 'MicrosoftWindowsPowerShellV2':
+#    ensure => absent,
+#  }
+#  dsc_windowsfeature {'MicrosoftWindowsPowerShellV2':
+#    dsc_ensure => 'absent',
+#    dsc_name   => 'MicrosoftWindowsPowerShellV2',
+#  }
 
   # microsoft-online-accounts: Microsoft Online Accounts
   registry_key { 'HKLM\SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowYourAccount':
@@ -447,13 +453,13 @@ node default {
     data       => 0,
   }
   # FIXME!
-  windowsfeature { 'SMB1Protocol':
-    ensure => absent,
-  }
-  dsc_windowsfeature {'SMB1Protocol':
-    dsc_ensure => 'absent',
-    dsc_name   => 'SMB1Protocol',
-  }
+#  windowsfeature { 'SMB1Protocol':
+#    ensure => absent,
+#  }
+#  dsc_windowsfeature {'SMB1Protocol':
+#    dsc_ensure => 'absent',
+#    dsc_name   => 'SMB1Protocol',
+#  }
 
   # wpad-101: WPAD mitigations
   registry_key { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad':
@@ -884,31 +890,31 @@ node default {
 #    inherit_parent_permissions => false,
 #  }
 
-  reg_acl { 'hklm:software':
-    owner => 'Administrator',
-    permissions =>
-      [
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
-# FIXME! non-fatal errors at execution
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
-      ],
-    inherit_from_parent => false,
-   }
-
-  reg_acl { 'hklm:system':
-    owner => 'Administrator',
-    permissions =>
-      [
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
-        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
-        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
-      ],
-    inherit_from_parent => false,
-   }
+#  reg_acl { 'hklm:software':
+#    owner => 'Administrator',
+#    permissions =>
+#      [
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+## FIXME! non-fatal errors at execution
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+#      ],
+#    inherit_from_parent => false,
+#   }
+#
+#  reg_acl { 'hklm:system':
+#    owner => 'Administrator',
+#    permissions =>
+#      [
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'BUILTIN\Administrators' },
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'SYSTEM' },
+#        {'RegistryRights' => 'FullControl', 'IdentityReference' => 'CREATOR OWNER' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'ALL APPLICATION PACKAGES' },
+#        {'RegistryRights' => 'QueryValues,EnumerateSubKeys,Notify,ReadPermissions', 'IdentityReference' => 'Users' },
+#      ],
+#    inherit_from_parent => false,
+#   }
 
 }
