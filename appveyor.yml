@@ -41,8 +41,8 @@ install:
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: Copy-Item "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource" -Destination "C:\Program Files\WindowsPowerShell\Modules" -Recurse -Container
 - ps: |
-    $msiPath = "$($env:USERPROFILE)\inspec-2.0.17-1-x64.msi"
-    (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.0.17/windows/2016/inspec-2.0.17-1-x64.msi', $msiPath)
+    $msiPath = "$($env:USERPROFILE)\inspec-2.2.61-1-x64.msi"
+    (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.2.61/windows/2016/inspec-2.2.61-1-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q
 - cmd: git.exe clone https://github.com/iadgov/Secure-Host-Baseline.git "%USERPROFILE%\Secure-Host-Baseline"
 
