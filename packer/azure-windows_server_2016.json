@@ -1,0 +1,200 @@
+{
+ "variables": {
+    "azure_ad_tenant_id": "{{env `az_tenant_id`}}",
+    "azure_subscription_id": "{{env `az_subscription_id`}}",
+    "app_id": "{{env `az_client_id`}}",
+    "client_secret": "{{env `az_client_secret`}}",
+    "resource_group": "Testing",
+    "storage_account": "mylab0packer"
+  },
+  "builders": [
+    {
+      "type": "azure-arm",
+      "subscription_id": "{{user `azure_subscription_id`}}",
+      "tenant_id": "{{user `azure_ad_tenant_id`}}",
+      "object_id": "{{user `object_id`}}",
+      "client_id": "{{user `app_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+
+      "cloud_environment_name": "AzurePublicCloud",
+      "location": "eastus",
+      "vm_size": "Standard_D1",
+
+      "managed_image_resource_group_name": "Testing",
+      "managed_image_name": "packer-win2016-{{isotime \"2006-01-02\"}}",
+
+      "os_type": "Windows",
+      "image_publisher": "MicrosoftWindowsServer",
+      "image_offer": "WindowsServer",
+      "image_sku": "2016-Datacenter",
+      "image_version": "latest", 
+
+      "communicator": "winrm",
+      "winrm_use_ssl": "true",
+      "winrm_insecure": "true",
+      "winrm_timeout": "3m",
+      "winrm_username": "packer"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "windows-shell",
+      "inline": [
+        "cmd /c \"whoami\""
+      ]
+    },
+    {
+      "type": "file",
+      "source": "../manifests/site.pp",
+      "destination": "c:\\windows\\temp\\site.pp"
+    },
+    {
+      "type": "file",
+      "source": "../files/sysmonconfig-export.xml",
+      "destination": "c:\\windows\\temp\\sysmonconfig-export.xml"
+    },
+    {
+      "type": "file",
+      "source": "../files/applocker.xml",
+      "destination": "c:\\windows\\temp\\applocker.xml"
+    },
+    {
+      "type": "file",
+      "source": "../files/firewall.wfw",
+      "destination": "c:\\windows\\temp\\firewall.wfw"
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "Import-Module ServerManager",
+        "Install-WindowsFeature -Name NET-Framework-Features",
+        "(New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.5.0-x64.msi', \"c:\\windows\\temp\\puppet-agent-5.5.0-x64.msi\")"
+
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "cmd /c \"whoami\"",
+        "cmd /c \"net users\"",
+        "cmd /c start /wait /B msiexec /i c:\\windows\\temp\\puppet-agent-5.5.0-x64.msi /q /L* c:\\install-puppet.log",
+        "whoami",
+        "set"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "winrm quickconfig -q"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet config print config"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet config print modulepath"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppetlabs-windows"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppetlabs-powershell"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppetlabs-registry"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppetlabs-dsc"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppetlabs-chocolatey"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppet-windowsfeature"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppet-windows_firewall"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppet-windows_autoupdate"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppet-windows_eventlog"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppet-msoffice"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install puppet-archive"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install autostructure-harden_windows_server"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install ocastle-win_service"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install ipcrm-registry_acl"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module list --tree"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet apply c:\\windows\\temp\\site.pp --disable_warnings deprecations --verbose"
+      ]
+    }
+  ]
+}

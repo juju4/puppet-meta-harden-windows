@@ -17,6 +17,30 @@ This module is targeted for Windows.
 
 you can test this role with Appveyor or Vagrant.
 
+```
+$ cd /path/to/
+$ vagrant up
+$ vagrant provision
+$ vagrant destroy
+```
+
+Role has also a packer config which allows to create image for virtualbox, vmware or azure template.
+
+```
+# load subscription settings or from file
+$ . ~/.azure/credentials
+$ packer build azure-windows_server_2016.json
+$ packer build -var-file=variables.json azure-windows_server_2016.json
+$ packer build -only=virtualbox-iso windows_server_2016.json
+## if you want to enable extra log
+$ PACKER_LOG_PATH="packerlog.txt" PACKER_LOG=1 packer build azure-windows_server_2016.json
+```
+
+See also
+* https://www.packer.io/docs/builders/azure.html
+* https://www.packer.io/docs/provisioners/puppet-masterless.html
+* https://www.packer.io/docs/templates/user-variables.html
+
 ## Troubleshooting & Known issues
 
 * vagrant execution
