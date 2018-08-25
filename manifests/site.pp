@@ -142,10 +142,10 @@ node default {
   windows_firewall::exception { 'WINRM':
     ensure       => present,
     direction    => 'in',
-    action       => 'Allow',
-    enabled      => 'yes',
+    action       => 'allow',
+    enabled      => true,
     protocol     => 'TCP',
-    local_port   => '5985',
+    local_port   => 5985,
     remote_port  => 'any',
     display_name => 'Windows Remote Management HTTP-In',
     description  => 'Inbound rule for Windows Remote Management via WS-Management. [TCP 5985]',
