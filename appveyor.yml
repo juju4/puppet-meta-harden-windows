@@ -34,7 +34,7 @@ install:
     puppet module install puppet-windowsfeature
     puppet module install puppet-windows_firewall
     #puppet module install puppet-windows_autoupdate --ignore-dependencies
-    #puppet module install puppet-windows_eventlog --ignore-dependencies
+    puppet module install puppet-windows_eventlog
     puppet module install puppet-msoffice
     puppet module install puppet-archive
     #puppet module install autostructure-harden_windows_server
