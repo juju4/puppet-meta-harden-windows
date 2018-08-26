@@ -52,6 +52,8 @@ node default {
     ensure_act_as_part_of_the_operating_system_is_set_to_no_one => false,
     configure_access_this_computer_from_the_network => false,
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
+    # only if hyper-v is present
+    configure_create_symbolic_links => false,
   }
 
   # requirement for powershell install
