@@ -9,7 +9,7 @@ init:
 - 'mkdir C:\ProgramData\PuppetLabs\facter && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\hiera && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\puppet\var && exit 0'
-#- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 matrix:
   fast_finish: true
 
@@ -67,34 +67,26 @@ after_test:
 on_finish:
 - ps: |
     Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
-    True
-- ps: |
     Get-PSDrive -PSProvider Registry
     New-PSDrive -Name HKCR -PSProvider Registry -Root Registry::HKEY_CLASSES_ROOT
     Get-ChildItem -Path "HKCR:\htafile\shell\open\command" -Recurse
-    True
-- ps: |
     Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
-    True
-- ps: |
     New-PSDrive -Name HKU -PSProvider Registry -Root Registry::HKEY_USERS
     Get-ChildItem -Path "HKU:\*\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
     Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server"
     True
-#- ps: |
-#    Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
-#    Get-DscConfigurationStatus -All
-#    True
-#- ps: |
-#    Get-DscResource MSFT_RoleResource
-#    Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
-#    True
-#- ps: |
-#    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources"
-#    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource"
-#    True
+- ps: |
+    Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
+    Get-DscConfigurationStatus -All
+    Get-DscResource MSFT_RoleResource
+    Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
+    True
+- ps: |
+    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources"
+    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource"
+    True
 - ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
-#- ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels"
+- ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels"
 - ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
 - ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider"
 - ps: Get-ChildItem -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts"
@@ -113,10 +105,8 @@ on_finish:
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern FAILED).length
     True
 #- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
-- ps: |
-    c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
-    True
-#- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
+- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 on_failure:
 - cmd: puppet module list --tree
