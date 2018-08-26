@@ -543,17 +543,18 @@ node default {
 
   # https://technet.microsoft.com/en-us/library/cc976700.aspx
   # divergence between roles and inspec test
-  local_security_policy { 'Access this computer from the network':
-    ensure         => 'present',
-    policy_setting => 'SeNetworkLogonRight',
-    policy_type    => 'Privilege Rights',
-    # harden_windows_server: Administrators, Authenticated users + DC: Enterprise Domain Controllers
-#    policy_value   => '*S-1-5-32-544,*S-1-5-11',
-#    policy_value   => '*S-1-5-32-544,*S-1-5-11,*S-1-5-9',
-    # FIXME! vagrant user needed if vagrant. appveyor ok.
-    policy_value   => '*S-1-0-0',
-#    policy_value   => '*S-1-0-0,vagrant',
-  }
+#  local_security_policy { 'Access this computer from the network':
+#    ensure         => 'present',
+#    policy_setting => 'SeNetworkLogonRight',
+#    policy_type    => 'Privilege Rights',
+#    # harden_windows_server: Administrators, Authenticated users + DC: Enterprise Domain Controllers
+##    policy_value   => '*S-1-5-32-544,*S-1-5-11',
+##    policy_value   => '*S-1-5-32-544,*S-1-5-11,*S-1-5-9',
+#    # FIXME! vagrant user needed if vagrant. appveyor ok.
+##    policy_value   => '*S-1-0-0',
+#    policy_value   => 'Nobody',
+##    policy_value   => '*S-1-0-0,vagrant',
+#  }
 
    # already in harden_windows_server
 #  local_security_policy { 'Create symbolic links':
