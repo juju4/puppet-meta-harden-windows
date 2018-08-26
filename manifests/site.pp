@@ -252,23 +252,23 @@ node default {
     policy_value   => 'Administrators',
   }
 
-  # cis-access-cred-manager
-  local_security_policy { 'Access Credential Manager as a trusted caller':
-    ensure         => 'present',
-    policy_setting => 'SeTrustedCredManAccessPrivilege',
-    policy_type    => 'Privilege Rights',
-    # policy_value   => '*S-1-0-0',
-    policy_value   => 'Nobody',
-  }
-
-  # cis-act-as-os
-  local_security_policy { 'Act as part of the operating system':
-    ensure         => 'present',
-    policy_setting => 'SeTcbPrivilege',
-    policy_type    => 'Privilege Rights',
-    # policy_value   => '*S-1-0-0',
-    policy_value   => 'Nobody',
-  }
+#  # cis-access-cred-manager
+#  local_security_policy { 'Access Credential Manager as a trusted caller':
+#    ensure         => 'present',
+#    policy_setting => 'SeTrustedCredManAccessPrivilege',
+#    policy_type    => 'Privilege Rights',
+#    # policy_value   => '*S-1-0-0',
+#    policy_value   => 'Nobody',
+#  }
+#
+#  # cis-act-as-os
+#  local_security_policy { 'Act as part of the operating system':
+#    ensure         => 'present',
+#    policy_setting => 'SeTcbPrivilege',
+#    policy_type    => 'Privilege Rights',
+#    # policy_value   => '*S-1-0-0',
+#    policy_value   => 'Nobody',
+#  }
 
   # cis-add-workstations (harden_windows_server: ensure_add_workstations_to_domain_is_set_to_administrators)
   # FIXME! still not applied
