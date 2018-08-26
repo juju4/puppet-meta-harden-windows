@@ -248,7 +248,8 @@ node default {
     ensure         => 'present',
     policy_setting => 'SeRemoteInteractiveLogonRight',
     policy_type    => 'Privilege Rights',
-    policy_value   => '*S-1-5-32-544',
+    # policy_value   => '*S-1-5-32-544',
+    policy_value   => 'Administrators',
   }
 
   # cis-access-cred-manager
@@ -256,7 +257,8 @@ node default {
     ensure         => 'present',
     policy_setting => 'SeTrustedCredManAccessPrivilege',
     policy_type    => 'Privilege Rights',
-    policy_value   => '*S-1-0-0',
+    # policy_value   => '*S-1-0-0',
+    policy_value   => 'Nobody',
   }
 
   # cis-act-as-os
@@ -264,7 +266,8 @@ node default {
     ensure         => 'present',
     policy_setting => 'SeTcbPrivilege',
     policy_type    => 'Privilege Rights',
-    policy_value   => '*S-1-0-0',
+    # policy_value   => '*S-1-0-0',
+    policy_value   => 'Nobody',
   }
 
   # cis-add-workstations (harden_windows_server: ensure_add_workstations_to_domain_is_set_to_administrators)
