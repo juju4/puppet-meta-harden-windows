@@ -195,7 +195,25 @@
     {
       "type": "windows-shell",
       "inline": [
-        "puppet module install autostructure-harden_windows_server"
+        "puppet module install kpn-local_security_policy"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install autostructure-auditpol"
+      ]
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "(New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', "c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz")"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz --ignore-dependencies"
       ]
     },
     {
@@ -230,5 +248,5 @@
       "output": "builds/windows_2016_{{.Provider}}-{{isotime \"2006-01-02\"}}.box",
       "vagrantfile_template": "vagrantfile-windows_2016.template"
     }
-  ],
+  ]
 }
