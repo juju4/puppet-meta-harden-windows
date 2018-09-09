@@ -53,7 +53,7 @@ install:
     (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.2.61/windows/2016/inspec-2.2.61-1-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q
 - cmd: git.exe clone https://github.com/iadgov/Secure-Host-Baseline.git "%USERPROFILE%\Secure-Host-Baseline"
-- cmd: echo filetemp_path=c:\projects\puppet-meta-harden-windows\files > C:\ProgramData\PuppetLabs\facter\facts.d\filetemp.txt
+- cmd: echo filetemp_path=c:\projects\puppet-meta-harden-windows\files> C:\ProgramData\PuppetLabs\facter\facts.d\filetemp.txt
 
 build: off
 
