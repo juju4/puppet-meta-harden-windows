@@ -86,7 +86,7 @@ node default {
     path    => 'c:/windows/temp/sysmonconfig.xml',
     ensure  => file,
 #    source  => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
-    source  => "$facts['filetemp_path']\\sysmonconfig-export.xml",
+    source  => "${facts['filetemp_path']}\\sysmonconfig-export.xml",
   }
   exec { 'Load sysmon config':
     command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
@@ -571,7 +571,7 @@ node default {
     path    => 'c:/windows/temp/applocker.xml',
     ensure  => file,
 #    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
-    source  => "$facts['filetemp_path']\\applocker.xml",
+    source  => "${facts['filetemp_path']}\\applocker.xml",
   }
   # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Set-AppLockerPolicy':
@@ -583,7 +583,7 @@ node default {
     path    => 'c:/windows/temp/firewall.wfw',
     ensure  => file,
 #    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
-    source  => "$facts['filetemp_path']\\firewall.wfw",
+    source  => "${facts['filetemp_path']}\\firewall.wfw",
   }
   # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Firewall import':
