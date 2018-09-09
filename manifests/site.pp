@@ -215,6 +215,21 @@ node default {
     data       => 1,
   }
 
+  auditpol { 'Group Membership':
+    success => 'enable',
+    failure => 'disable',
+  }
+
+  auditpol { 'PNP Activity':
+    success => 'enable',
+    failure => 'disable',
+  }
+
+  auditpol { 'Removable Storage':
+    success => 'enable',
+    failure => 'enable',
+  }
+
   #  windows-ie
   registry_key { 'HKLM\Software\Policies\Microsoft\Internet Explorer\Main':
     ensure => present,
@@ -881,6 +896,22 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork',
     dsc_valuename => 'RequireSecurityDevice',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Signing in using a PIN must be turned off.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
+    dsc_valuename => 'AllowDomainPINLogon',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The system must be configured to prevent the storage of passwords and credentials.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa',
+    dsc_valuename => 'DisableDomainCreds',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
