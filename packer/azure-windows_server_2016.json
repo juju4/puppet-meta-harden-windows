@@ -182,7 +182,7 @@
     {
       "type": "powershell",
       "inline": [
-        "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', "c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz")"
+        "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', \"c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz\")"
       ]
     },
     {
