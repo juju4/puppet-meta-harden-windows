@@ -230,6 +230,16 @@ node default {
     failure => 'enable',
   }
 
+  auditpol { 'Other Account Logon':
+    success => 'enable',
+    failure => 'enable',
+  }
+
+  auditpol { 'Distribution Group Management':
+    success => 'enable',
+    failure => 'enable',
+  }
+
   #  windows-ie
   registry_key { 'HKLM\Software\Policies\Microsoft\Internet Explorer\Main':
     ensure => present,
