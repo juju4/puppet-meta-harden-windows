@@ -259,6 +259,7 @@ node default {
   }
 
   # windows-account
+# FIXME!
   local_security_policy { 'Allow log on through Remote Desktop Services':
     ensure         => 'present',
     policy_setting => 'SeRemoteInteractiveLogonRight',
