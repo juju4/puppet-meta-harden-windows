@@ -216,11 +216,13 @@ node default {
     data       => 1,
   }
 
+# https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-group-membership, Win10/2016+
   auditpol { 'Group Membership':
     success => 'enable',
     failure => 'disable',
   }
 
+# https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-pnp-activity, Win10/2016+
   auditpol { 'PNP Activity':
     success => 'enable',
     failure => 'disable',
@@ -231,7 +233,7 @@ node default {
     failure => 'enable',
   }
 
-  auditpol { 'Other Account Logon':
+  auditpol { 'Other Account Logon Events':
     success => 'enable',
     failure => 'enable',
   }
