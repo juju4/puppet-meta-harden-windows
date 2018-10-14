@@ -66,6 +66,7 @@ node default {
   # chocolatey install (default for Windows)
   $chocolatey_packages = ['powershell', 'osquery', 'git', 'sysinternals' ]
 # FIXME! vagrant crash with chocolatey packages install. appveyor OK
+# FIXME! LAPS not available/pending package fix https://chocolatey.org/packages/laps
 #  $chocolatey_packages = []
   $chocolatey_packages.each |String $pkg| {
     package { "${pkg}":
