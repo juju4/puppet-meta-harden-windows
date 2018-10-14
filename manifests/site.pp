@@ -928,6 +928,22 @@ node default {
     dsc_valuetype => 'Dword',
   }
 
+  dsc_registry {"Disable Windows Script Host":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
+    dsc_valuename => 'Enabled',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Disable Windows Script Host - IgnoreUserSettings":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
+    dsc_valuename => 'IgnoreUserSettings',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
   # acl permissions
 #  acl { 'c:/':
 #    permissions => [
