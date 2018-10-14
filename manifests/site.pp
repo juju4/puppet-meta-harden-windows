@@ -488,13 +488,13 @@ node default {
     data       => 0,
   }
   # FIXME!
-#  windowsfeature { 'SMB1Protocol':
-#    ensure => absent,
-#  }
-#  dsc_windowsfeature {'SMB1Protocol':
-#    dsc_ensure => 'absent',
-#    dsc_name   => 'SMB1Protocol',
-#  }
+  windowsfeature { 'SMB1Protocol':
+    ensure => absent,
+  }
+  dsc_windowsfeature {'SMB1Protocol':
+    dsc_ensure => 'absent',
+    dsc_name   => 'SMB1Protocol',
+  }
 
   # wpad-101: WPAD mitigations
   registry_key { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad':
