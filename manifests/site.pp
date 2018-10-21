@@ -464,21 +464,23 @@ node default {
     }
   }
 
-  $dangerousextcmd = ['HKCR:\\htafile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\edit\\command', 'HKCR:\\VBSFile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\open2\\command', 'HKCR:\\VBEFile\\shell\\edit\\command', 'HKCR:\\VBEFile\\shell\\open\\command', 'HKCR:\\VBEFile\\shell\\open2\\command', 'HKCR:\\JSFile\\shell\\open\\command', 'HKCR:\\JSEFile\\shell\\open\\command', 'HKCR:\\wshfile\\shell\\open\\command', 'HKCR:\\scriptletfile\\shell\\open\\command' ]
+  $dangerousextcmd = ['HKCR\htafile\shell\open\command', 'HKCR\VBSFile\shell\edit\command', 'HKCR\VBSFile\shell\open\command', 'HKCR\VBSFile\shell\open2\command', 'HKCR\VBEFile\shell\edit\command', 'HKCR\VBEFile\shell\open\command', 'HKCR\VBEFile\shell\open2\command', 'HKCR\JSFile\shell\open\command', 'HKCR\JSEFile\shell\open\command', 'HKCR\wshfile\shell\open\command', 'HKCR\scriptletfile\shell\open\command' ]
+  #$dangerousextcmd = ['HKCR:\\htafile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\edit\\command', 'HKCR:\\VBSFile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\open2\\command', 'HKCR:\\VBEFile\\shell\\edit\\command', 'HKCR:\\VBEFile\\shell\\open\\command', 'HKCR:\\VBEFile\\shell\\open2\\command', 'HKCR:\\JSFile\\shell\\open\\command', 'HKCR:\\JSEFile\\shell\\open\\command', 'HKCR:\\wshfile\\shell\\open\\command', 'HKCR:\\scriptletfile\\shell\\open\\command' ]
   $dangerousextcmd.each |String $extcmd| {
-#    registry_value { "Extension ${extcmd}":
-#      path       => "${extcmd}",
-#      ensure     => present,
-#      value      => '(default)',
-#      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
-#    }
-    dsc_registry {"registry_ext_${extcmd}":
-      dsc_ensure => 'Present',
-      dsc_key => "${extcmd}",
-      dsc_valuename => '(default)',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+    registry_value { "Extension ${extcmd}":
+      path       => "${extcmd}",
+      ensure     => present,
+      value      => '(default)',
+      type       => string,
+      data       => '%windir%\system32\notepad.exe',
     }
+# FIXME!
+#    dsc_registry {"registry_ext_${extcmd}":
+#      dsc_ensure => 'Present',
+#      dsc_key => "${extcmd}",
+#      dsc_valuename => '(default)',
+#      dsc_valuedata => '%windir%\system32\notepad.exe',
+#    }
   }
 
   # services-1: Services to be disabled
