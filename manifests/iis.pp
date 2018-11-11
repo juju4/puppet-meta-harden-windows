@@ -153,7 +153,7 @@ iis_application_pool { 'complete_site_app_pool':
 # default: 20 (min)
   idle_timeout            => '00:20:00',
 # To load web.config. normally in web root folder
-#  enable_configuration_override => true,
+  enable_configuration_override => true,
 # https://docs.microsoft.com/en-us/iis/get-started/planning-your-iis-architecture/getting-started-with-configuration-in-iis-7-and-above
 # https://msdn.microsoft.com/en-us/library/bb763179.aspx
 }
