@@ -26,8 +26,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 # https://github.com/snandam/vagrant_windows_puppet/blob/master/Vagrantfile
 
-  config.vm.provision "shell", inline: "(New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.4.0-x64.msi', 'c:\\users\\vagrant\\puppet-agent-5.4.0-x64.msi')"
-  config.vm.provision "shell", inline: "cmd /c start /wait msiexec /i c:\\users\\vagrant\\puppet-agent-5.4.0-x64.msi /q /L* c:\\install-puppet.log", privileged: true
+  config.vm.provision "shell", inline: "(New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.5.6-x64.msi', 'c:\\users\\vagrant\\puppet-agent-5.5.6-x64.msi')"
+  config.vm.provision "shell", inline: "cmd /c start /wait msiexec /i c:\\users\\vagrant\\puppet-agent-5.5.6-x64.msi /q /L* c:\\install-puppet.log", privileged: true
+  config.vm.provision "shell", inline: "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', \"c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz\")"
+  config.vm.provision "shell", inline: "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/kpn-puppet/puppet-kpn-local_security_policy/archive/3.1.1.tar.gz', \"c:\\windows\\temp\\puppet-kpn-local_security_policy-3.1.1.tar.gz\")"
   $modules = <<-EOF
 puppet config print config
 puppet config print modulepath
@@ -41,9 +43,15 @@ puppet module install puppet-windows_autoupdate
 puppet module install puppet-windows_eventlog
 puppet module install puppet-msoffice
 puppet module install puppet-archive
-puppet module install autostructure-harden_windows_server
+#puppet module install autostructure-harden_windows_server
+#puppet module install kpn-local_security_policy
+puppet module install c:\\windows\\temp\\puppet-kpn-local_security_policy-3.1.1.tar.gz --ignore-dependencies
+puppet module install autostructure-auditpol
+puppet module install c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz --ignore-dependencies
 puppet module install ocastle-win_service
 puppet module install ipcrm-registry_acl
+puppet module install puppetlabs-iis
+puppet module install opentable-iis_rewrite
 #puppet module install chocolatey-chocolatey
 EOF
   config.vm.provision "shell", inline: $modules, privileged: true
@@ -72,6 +80,6 @@ EOF
 
   # go manual road...
   config.vm.provision "shell", inline: "puppet apply --modulepath='C:/ProgramData/PuppetLabs/code/environments/production/modules;C:/ProgramData/PuppetLabs/code/modules;C:/opt/puppetlabs/puppet/modules' c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\site.pp --disable_warnings deprecations --verbose", privileged: true
+  config.vm.provision "shell", inline: "puppet apply --modulepath='C:/ProgramData/PuppetLabs/code/environments/production/modules;C:/ProgramData/PuppetLabs/code/modules;C:/opt/puppetlabs/puppet/modules' c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\iis.pp --disable_warnings deprecations --verbose", privileged: true
 
-  end
 end
