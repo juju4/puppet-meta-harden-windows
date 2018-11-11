@@ -9,7 +9,8 @@ $webroot = 'c:\\inetpub\\complete'
 
 iis_feature { $iis_features:
   ensure => 'present',
-  installmanagementtools => true,
+  include_management_tools => true,
+  include_all_subfeatures => false,
 }
 
 # Delete the default website to prevent a port binding conflict.
@@ -65,6 +66,10 @@ iis_application_pool { 'complete_site_app_pool':
   state                   => 'started',
   managed_pipeline_mode   => 'Integrated',
   managed_runtime_version => 'v4.0',
+  auto_start              => true,
+  enable32_bit_app_on_win64 => false,
+# default: 20 (min)
+  idle_timeout            => 20
 # To load web.config. normally in web root folder
 #  enable_configuration_override => true,
 # https://docs.microsoft.com/en-us/iis/get-started/planning-your-iis-architecture/getting-started-with-configuration-in-iis-7-and-above
