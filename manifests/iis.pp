@@ -1,10 +1,15 @@
+# https://forge.puppet.com/puppetlabs/iis
+# https://puppet.com/blog/deploying-iis-and-aspnet-puppet
+# https://www.metaltoad.com/blog/managing-iis-configuration-puppet-powershell-dsc
 
-$iis_features = ['Web-WebServer','Web-Scripting-Tools']
+$iis_features = ['Web-WebServer','Web-Scripting-Tools', 'Web-Http-Errors', 'Web-Http-Logging', 'Web-Filtering']
+#$iis_features = ['Web-WebServer','Web-Scripting-Tools', 'Web-Http-Errors', 'Web-Http-Logging', 'Web-Filtering', 'Web-Asp-Net45', 'NET-Framework-45-ASPNET']
 $cert_fqdn = 'test.contoso.com'
 $webroot = 'c:\\inetpub\\complete'
 
 iis_feature { $iis_features:
   ensure => 'present',
+  installmanagementtools => true,
 }
 
 # Delete the default website to prevent a port binding conflict.
