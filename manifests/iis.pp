@@ -1,6 +1,7 @@
 
 $iis_features = ['Web-WebServer','Web-Scripting-Tools']
 $cert_fqdn = 'test.contoso.com'
+$webroot = 'c:\\inetpub\\complete'
 
 iis_feature { $iis_features:
   ensure => 'present',
@@ -21,7 +22,7 @@ exec { 'self-signed-certificate':
 
 # Create Directories
 
-file { 'c:\\inetpub\\complete':
+file { "${webroot}":
   ensure => 'directory'
 }
 
@@ -31,7 +32,7 @@ file { 'c:\\inetpub\\complete_vdir':
 
 # Set Permissions
 
-acl { 'c:\\inetpub\\complete':
+acl { "${webroot}":
   permissions => [
     {'identity' => 'IISCompleteGroup', 'rights' => ['read', 'execute']},
   ],
@@ -64,7 +65,7 @@ iis_application_pool {'test_app_pool':
 
 iis_site { 'complete':
   ensure           => 'started',
-  physicalpath     => 'c:\\inetpub\\complete',
+  physicalpath     => "${webroot}",
   applicationpool  => 'complete_site_app_pool',
   enabledprotocols => 'https',
   bindings         => [
@@ -76,7 +77,7 @@ iis_site { 'complete':
       'sslflags'             => 1,
     },
   ],
-  require => File['c:\\inetpub\\complete'],
+  require => File["${webroot}"],
 }
 
 iis_virtual_directory { 'vdir':
@@ -115,6 +116,19 @@ file { 'c:\\inetpub\\web.config':
 #class { 'iis_rewrite':
 ##  package_source_location => 'http://myhost.com/package231.msi'
 #}
+
+file { "${webroot}\\.well-known":
+  ensure    => directory,
+}
+file { "${webroot}\\.well-known\\security.txt":
+  ensure    => present,
+  content   => "Contact: mailto:security@example.com
+Contact: +1-201-555-0123
+Contact: https://example.com/security
+Encryption: https://example.com/pgp-key.txt
+Disclosure: Full
+Acknowledgement: https://example.com/hall-of-fame.html",
+}
 
 # https://docs.microsoft.com/en-us/iis/web-hosting/web-server-for-shared-hosting/application-pool-identity-as-anonymous-user
 # https://kevinareed.com/2015/11/07/how-to-deploy-anything-in-iis-with-zero-downtime-on-a-single-server/
