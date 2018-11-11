@@ -67,6 +67,7 @@ acl { 'c:\\inetpub\\complete_vdir':
 # https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/
 # https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/denyurlsequences/
 # https://www.saotn.org/hackrepair-bad-bots-htaccess-web-config-iis/
+# https://www.odity.co.uk/articles/how-to-redirect-http-to-https-with-iis-rewrite-module
 file { "${webroot}\\web.config":
   content => "<configuration>
  <system.web>
