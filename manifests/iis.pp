@@ -71,6 +71,7 @@ file { "${webroot}\\web.config":
  <system.web>
   <authentication>
     <form cookieless=\"UserCookies\" requireSSL=\"true\">
+    <form requireSSL=\"true\">
   </authentication>
  </system.web>
  <system.webServer>
