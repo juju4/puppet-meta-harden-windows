@@ -20,6 +20,11 @@ exec { 'self-signed-certificate':
   provider  => powershell,
 }
 
+# Create User/Group
+group { 'IISCompleteGroup':
+   ensure => present,
+}
+
 # Create Directories
 
 file { "${webroot}":
