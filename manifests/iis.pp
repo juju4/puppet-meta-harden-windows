@@ -29,6 +29,7 @@ exec { 'self-signed-certificate':
 #   and send in variable to use further
 exec { 'self-signed-certificate-to-facts':
   command   => "(Get-ChildItem -Path cert:\\LocalMachine\\My -Recurse -DNSName \"${cert_fqdn}\" | Fl -property Thumbprint | Out-string).trim().Replace('Thumbprint : ', 'webserver_certhash=') | Out-File C:\\ProgramData\\PuppetLabs\\facter\\facts.d\\webserver_certhash.txt",
+  unless    => "if (Test-Path -Path \"C:\\ProgramData\\PuppetLabs\\facter\\facts.d\\webserver_certhash.txt\") { exit 1 }",
   provider  => powershell,
 }
 
