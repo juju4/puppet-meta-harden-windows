@@ -112,7 +112,7 @@ file { "${webroot}\\web.config":
              <add sequence=".svn" />
           </denyUrlSequences>
           <fileExtensions allowUnlisted="false" />
-          <requestLimits maxUrl="2048" maxQueryString="1024" />
+          <requestLimits maxUrl="2048" maxQueryString="1024" maxAllowedContent="30000000" />
           <verbs allowUnlisted="false" />
        </requestFiltering>
     </security>
