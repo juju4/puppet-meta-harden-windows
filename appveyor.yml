@@ -117,6 +117,16 @@ on_finish:
 - ps: Get-ChildItem -Path cert:\* -Recurse -DNSName "test.contoso.com"
 - ps: Get-ChildItem -Path "c:\inetpub" -Recurse
 - ps: Get-Content "c:\inetpub\web.config"
+- ps: |
+    $WebResponse1 = Invoke-WebRequest "http://localhost"
+    $WebResponse1.Headers
+    $WebResponse1.StatusCode
+    True
+- ps: |
+    $WebResponse2 = Invoke-WebRequest "https://localhost"
+    $WebResponse2.Headers
+    $WebResponse2.StatusCode
+    True
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 on_failure:
