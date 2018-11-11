@@ -136,6 +136,13 @@ file { 'c:\\inetpub\\web.config':
           <action type="CustomResponse" statusCode="403" statusReason="Forbidden" statusDescription="Forbidden" />
         </rule>
       </rules>
+
+      <outboundRules rewriteBeforeCache="true">
+        <rule name="Remove Server header">
+          <match serverVariable="RESPONSE_Server" pattern=".+" />
+          <action type="Rewrite" value="" />
+        </rule>
+      </outboundRules>
     </rewrite>
 
   </httpProtocol>
