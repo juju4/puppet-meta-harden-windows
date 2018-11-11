@@ -21,7 +21,13 @@ iis_site {'Default Web Site':
 # Create self-signed certificate
 exec { 'self-signed-certificate':
   command   => "New-SelfSignedCertificate -DnsName ${cert_fqdn} -CertStoreLocation cert:\\LocalMachine\\My",
-  unless    => "if (Get-ChildItem -Path cert:\\* -Recurse -DNSName \"${cert_fqdn}\") { exit 1 }",
+  unless    => "if (Get-ChildItem -Path cert:\\LocalMachine\\My -Recurse -DNSName \"${cert_fqdn}\") { exit 1 }",
+  provider  => powershell,
+}
+# How-to recover: Get-ChildItem -Path cert:\\LocalMachine\\My -Recurse -DNSName \"${cert_fqdn}\" | fl Thumbprint
+#   and send in variable to use further
+exec { 'self-signed-certificate-to-facts':
+  command   => "(Get-ChildItem -Path cert:\\LocalMachine\\My -Recurse -DNSName \"${cert_fqdn}\" | Fl -property Thumbprint | Out-string).trim().Replace('Thumbprint : ', 'webserver_certhash=') | Out-File C:\ProgramData\PuppetLabs\facter\facts.d\webserver_certhash.txt",
   provider  => powershell,
 }
 
@@ -82,7 +88,7 @@ iis_site { 'complete':
     {
       'bindinginformation'   => '*:443:',
       'protocol'             => 'https',
-      'certificatehash'      => '3598FAE5ADDB8BA32A061C5579829B359409856F',
+      'certificatehash'      => $facts['webserver_certhash'],
       'certificatestorename' => 'MY',
       'sslflags'             => 1,
     },
