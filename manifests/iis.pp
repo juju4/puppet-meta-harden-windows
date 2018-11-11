@@ -206,7 +206,7 @@ iis_site { 'complete':
 #    },
   ],
   logformat => 'W3C',
-  logpath   => ${logpath},
+  logpath   => "${logpath}",
   logperiod => 'Daily',
   limits => {
     connectiontimeout => 120,
