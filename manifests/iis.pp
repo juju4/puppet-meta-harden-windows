@@ -69,6 +69,7 @@ acl { 'c:\\inetpub\\complete_vdir':
 file { "${webroot}\\web.config":
   content => "<configuration>
  <system.webServer>
+  <directoryBrowse enabled=\"false\" />
   <httpProtocol>
     <customHeaders>
       <!-- SECURITY HEADERS - https://securityheaders.io/? -->
