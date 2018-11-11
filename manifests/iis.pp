@@ -5,7 +5,9 @@
 $iis_features = ['Web-WebServer','Web-Scripting-Tools', 'Web-Http-Errors', 'Web-Http-Logging', 'Web-Filtering']
 #$iis_features = ['Web-WebServer','Web-Scripting-Tools', 'Web-Http-Errors', 'Web-Http-Logging', 'Web-Filtering', 'Web-Asp-Net45', 'NET-Framework-45-ASPNET']
 $cert_fqdn = 'test.contoso.com'
+# Recommended to move those to dedicated partition
 $webroot = 'c:\\inetpub\\complete'
+$logpath = 'c:\\inetpub\\logs\LogFiles'
 
 iis_feature { $iis_features:
   ensure => 'present',
@@ -204,6 +206,14 @@ iis_site { 'complete':
       'sslflags'             => 1,
     },
   ],
+  logformat => 'W3C',
+  logpath   => ${logpath},
+  logperiod => 'Daily',
+  limits => {
+    connectiontimeout => 120,
+    maxbandwidth      => 4294967200,
+    maxconnections    => 4294967200,
+  },
   require => File["${webroot}"],
 }
 
