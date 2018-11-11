@@ -103,7 +103,7 @@ file { "${webroot}\\web.config":
           <denyUrlSequences>
              <add sequence=\"..\" />
              <add sequence=\":\" />
-             <add sequence=\"\\" />
+             <add sequence=\"\\\" />
              <add sequence=\".conf\" />
              <add sequence=\".config\" />
              <add sequence=\".git\" />
