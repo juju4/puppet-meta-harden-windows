@@ -68,6 +68,11 @@ acl { 'c:\\inetpub\\complete_vdir':
 # https://www.saotn.org/hackrepair-bad-bots-htaccess-web-config-iis/
 file { "${webroot}\\web.config":
   content => "<configuration>
+ <system.web>
+  <authentication>
+    <form cookieless=\"UserCookies\" requireSSL=\"true\">
+  </authentication>
+ </system.web>
  <system.webServer>
   <directoryBrowse enabled=\"false\" />
   <httpProtocol>
