@@ -98,7 +98,7 @@ file { "${webroot}\\web.config":
     </customHeaders>
 
     <security>
-       <requestFiltering>
+       <requestFiltering allowHighBitCharacters="false">
           <denyUrlSequences>
              <add sequence=".." />
              <add sequence=":" />
