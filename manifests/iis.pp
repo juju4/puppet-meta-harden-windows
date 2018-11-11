@@ -124,7 +124,7 @@ file { 'c:\\inetpub\\web.config':
       <!-- Protects against MIME-type confusion attack. ref.: https://www.veracode.com/blog/2014/03/guidelines-for-setting-security-headers/ -->
       <add name=\"X-Content-Type-Options\" value=\"nosniff\" />
       <!-- CSP modern XSS directive-based defence, used since 2014. ref.: http://content-security-policy.com/ -->
-      <add name=\"Content-Security-Policy\" value=\"default-src 'self'; font-src *;img-src * data:; script-src *; style-src *;\" />
+      <add name=\"Content-Security-Policy\" value=\"default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'self'; upgrade-insecure-requests;\" />
       <!-- Prevents from leaking referrer data over insecure connections. ref.: https://scotthelme.co.uk/a-new-security-header-referrer-policy/ -->
       <add name=\"Referrer-Policy\" value=\"strict-origin\" />
     </customHeaders>
