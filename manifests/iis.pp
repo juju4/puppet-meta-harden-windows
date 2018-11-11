@@ -89,8 +89,12 @@ iis_site { 'complete':
   ensure           => 'started',
   physicalpath     => "${webroot}",
   applicationpool  => 'complete_site_app_pool',
-  enabledprotocols => 'https',
+  enabledprotocols => [ 'http', 'https' ],
   bindings         => [
+    {
+      'bindinginformation'   => '*:80:',
+      'protocol'             => 'http',
+    },
     {
       'bindinginformation'   => '*:443:',
       'protocol'             => 'https',
