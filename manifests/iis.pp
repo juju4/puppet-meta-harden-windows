@@ -66,7 +66,7 @@ acl { 'c:\\inetpub\\complete_vdir':
 # https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/
 # https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/denyurlsequences/
 # https://www.saotn.org/hackrepair-bad-bots-htaccess-web-config-iis/
-file { 'c:\\inetpub\\web.config':
+file { "${webroot}\\web.config":
   content => "<configuration>
  <system.webServer>
   <httpProtocol>
