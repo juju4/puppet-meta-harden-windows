@@ -14,8 +14,8 @@ iis_site {'Default Web Site':
 
 # Create self-signed certificate
 exec { 'self-signed-certificate':
-  command   => "New-SelfSignedCertificate -DnsName ${cert_fqdn} -CertStoreLocation cert:\LocalMachine\My",
-  unless    => "if (Get-ChildItem -Path cert:\* -Recurse -DNSName \"${cert_fqdn}\") { exit 1 }",
+  command   => "New-SelfSignedCertificate -DnsName ${cert_fqdn} -CertStoreLocation cert:\\LocalMachine\\My",
+  unless    => "if (Get-ChildItem -Path cert:\\* -Recurse -DNSName \"${cert_fqdn}\") { exit 1 }",
   provider  => powershell,
 }
 
@@ -93,17 +93,17 @@ file { 'c:\\inetpub\\web.config':
     <customHeaders>
       <!-- SECURITY HEADERS - https://securityheaders.io/? -->
       <!-- Protects against Clickjacking attacks. ref.: http://stackoverflow.com/a/22105445/1233379 -->
-      <add name="X-Frame-Options" value="SAMEORIGIN" />
+      <add name=\"X-Frame-Options\" value=\"SAMEORIGIN\" />
       <!-- Protects against Clickjacking attacks. ref.: https://www.owasp.org/index.php/HTTP_Strict_Transport_Security_Cheat_Sheet -->
-      <add name="Strict-Transport-Security" value="max-age=31536000; includeSubDomains"/>
+      <add name=\"Strict-Transport-Security\" value=\"max-age=31536000; includeSubDomains\"/>
       <!-- Protects against XSS injections. ref.: https://www.veracode.com/blog/2014/03/guidelines-for-setting-security-headers/ -->
-      <add name="X-XSS-Protection" value="1; mode=block" />
+      <add name=\"X-XSS-Protection\" value=\"1; mode=block\" />
       <!-- Protects against MIME-type confusion attack. ref.: https://www.veracode.com/blog/2014/03/guidelines-for-setting-security-headers/ -->
-      <add name="X-Content-Type-Options" value="nosniff" />
+      <add name=\"X-Content-Type-Options\" value=\"nosniff\" />
       <!-- CSP modern XSS directive-based defence, used since 2014. ref.: http://content-security-policy.com/ -->
-      <add name="Content-Security-Policy" value="default-src 'self'; font-src *;img-src * data:; script-src *; style-src *;" />
+      <add name=\"Content-Security-Policy\" value=\"default-src 'self'; font-src *;img-src * data:; script-src *; style-src *;\" />
       <!-- Prevents from leaking referrer data over insecure connections. ref.: https://scotthelme.co.uk/a-new-security-header-referrer-policy/ -->
-      <add name="Referrer-Policy" value="strict-origin" />
+      <add name=\"Referrer-Policy\" value=\"strict-origin\" />
     </customHeaders>
   </httpProtocol>
 </system.webServer>",
