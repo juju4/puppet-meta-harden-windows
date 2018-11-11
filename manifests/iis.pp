@@ -125,7 +125,7 @@ file { "${webroot}\\web.config":
         <rule name=\"Block Common Malicious Bot Queries\" stopProcessing=\"true\">
           <match url=\".*\" ignoreCase=\"false\" />
           <conditions logicalGrouping=\"MatchAny\">
-            <add input=\"{QUERY_STRING}\" pattern=\"http\:\\/\\/www\\.google\\.com\\/humans\\.txt\\?\" />
+            <add input=\"{QUERY_STRING}\" pattern=\"http\\:\\/\\/www\\.google\\.com\\/humans\\.txt\\?\" />
             <add input=\"{QUERY_STRING}\" pattern=\"(img|thumb|thumb_editor|thumbopen).php\" />
             <add input=\"{QUERY_STRING}\" pattern=\"fckeditor\" />
             <add input=\"{QUERY_STRING}\" pattern=\"revslider\" />
