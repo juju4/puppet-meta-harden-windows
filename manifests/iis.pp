@@ -70,8 +70,8 @@ file { "${webroot}\\web.config":
   content => "<configuration>
  <system.web>
   <authentication>
-    <form cookieless=\"UserCookies\" requireSSL=\"true\">
-    <form requireSSL=\"true\">
+    <form cookieless=\"UserCookies\" requireSSL=\"true\" protection=\"All\" />
+    <form requireSSL=\"true\" />
   </authentication>
  </system.web>
  <system.webServer>
