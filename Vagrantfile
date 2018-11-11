@@ -6,8 +6,8 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "mwrock/Windows2016"
-  hardenwin.vm.hostname = "phardenwin"
-  #hardenwin.vm.network "private_network", ip: "192.168.50.100"
+  config.vm.hostname = "phardenwin"
+  #config.vm.network "private_network", ip: "192.168.50.100"
 
   config.vm.guest = :windows
   config.vm.communicator = "winrm"
@@ -49,9 +49,9 @@ puppet module install c:\\windows\\temp\\puppet-kpn-local_security_policy-3.1.1.
 puppet module install autostructure-auditpol
 puppet module install c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz --ignore-dependencies
 puppet module install ocastle-win_service
-puppet module install ipcrm-registry_acl
+puppet module install ipcrm-registry_acl --ignore-dependencies
 puppet module install puppetlabs-iis
-puppet module install opentable-iis_rewrite
+puppet module install opentable-iis_rewrite --ignore-dependencies
 #puppet module install chocolatey-chocolatey
 EOF
   config.vm.provision "shell", inline: $modules, privileged: true
@@ -61,6 +61,7 @@ EOF
   config.vm.provision "shell", inline: "mkdir C:/ProgramData/PuppetLabs/code/environments/production/modules/harden_windows/manifests", privileged: true
   config.vm.provision "shell", inline: "mkdir C:/projects/puppet-meta-harden-windows/files", privileged: true
   config.vm.provision "file", source: "manifests/site.pp", destination: "c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\site.pp"
+  config.vm.provision "file", source: "manifests/iis.pp", destination: "c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\iis.pp"
   config.vm.provision "file", source: "manifests/chocolatey.pp", destination: "c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\chocolatey.pp"
   config.vm.provision "file", source: "files/applocker.xml", destination: "c:\\projects\\puppet-meta-harden-windows\\files\\applocker.xml"
   config.vm.provision "file", source: "files/firewall.wfw", destination: "c:\\projects\\puppet-meta-harden-windows\\files\\firewall.wfw"

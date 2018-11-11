@@ -24,6 +24,8 @@ install:
 - ps: |
     (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz")
 - ps: |
+  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/kpn-puppet/puppet-kpn-local_security_policy/archive/3.1.1.tar.gz', "$($env:USERPROFILE)\puppet-kpn-local_security_policy-3.1.1.tar.gz")
+- ps: |
     puppet config print config
     puppet config print modulepath
     puppet module install puppetlabs-windows
@@ -41,13 +43,14 @@ install:
     # https://puppet.com/docs/puppet/5.3/modules_installing.html#installing-from-a-release-tarball
     #puppet module install ayohrling-local_security_policy
     #puppet module install jonono-auditpol
-    puppet module install kpn-local_security_policy
+    puppet module install "$($env:USERPROFILE)\puppet-kpn-local_security_policy-3.1.1.tar.gz" --ignore-dependencies
+    #puppet module install kpn-local_security_policy
     puppet module install autostructure-auditpol
     puppet module install "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz" --ignore-dependencies
     puppet module install ocastle-win_service
-    puppet module install ipcrm-registry_acl
+    puppet module install ipcrm-registry_acl --ignore-dependencies
     puppet module install puppetlabs-iis
-    puppet module install opentable-iis_rewrite
+    puppet module install opentable-iis_rewrite --ignore-dependencies
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: Copy-Item "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource" -Destination "C:\Program Files\WindowsPowerShell\Modules" -Recurse -Container
 - ps: |
@@ -61,9 +64,9 @@ build: off
 
 test_script:
 - ps: |
-    puppet apply manifests/site.pp --disable_warnings deprecations --verbose
-- ps: |
     puppet apply manifests/iis.pp --disable_warnings deprecations --verbose
+- ps: |
+    puppet apply manifests/site.pp --disable_warnings deprecations --verbose
 
 after_test:
 - ps: Get-NetFirewallRule -PolicyStore ActiveStore
