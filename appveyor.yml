@@ -9,35 +9,118 @@ init:
 - 'mkdir C:\ProgramData\PuppetLabs\facter && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\hiera && exit 0'
 - 'mkdir C:\ProgramData\PuppetLabs\puppet\var && exit 0'
-environment:
-  matrix:
-  - PUPPET_GEM_VERSION: ~> 4.0
-    RUBY_VER: 23
-  - PUPPET_GEM_VERSION: ~> 4.0
-    RUBY_VER: 23-x64
-# https://github.com/ffi/ffi/issues/602#issuecomment-363364015  Ruby Gems Version is limited to < 2.5 on windows.
-  - PUPPET_GEM_VERSION: ~> 5.0
-    RUBY_VER: 24
-  - PUPPET_GEM_VERSION: ~> 5.0
-    RUBY_VER: 24-x64
-  - PUPPET_GEM_VERSION: 4.7.1
-    RUBY_VER: 23-x64
+#- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 matrix:
   fast_finish: true
+
 install:
-- SET PATH=C:\Ruby%RUBY_VER%\bin;%PATH%
+- SET PATH=C:\Program Files\Puppet Labs\Puppet\bin;C:\Ruby%RUBY_VER%\bin;%PATH%
 - ps: |
-    gem list openssl
-    ruby -ropenssl -e 'puts \"OpenSSL Version - #{OpenSSL::OPENSSL_VERSION}\"; puts \"OpenSSL Library Version - #{OpenSSL::OPENSSL_LIBRARY_VERSION}\"'
-- bundle install --jobs 4 --retry 2 --without system_tests build
-- type Gemfile.lock
+    dism /online /get-features
+    dism /online /Enable-Feature /All /FeatureName:ManagementOdata
+    $msiPath = "$($env:USERPROFILE)\puppet-agent-5.5.6-x64.msi"
+    (New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.5.6-x64.msi', $msiPath)
+    cmd /c start /wait msiexec /i $msiPath /q /L* c:\install-puppet.log
+- ps: |
+    (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz")
+- ps: |
+    puppet config print config
+    puppet config print modulepath
+    puppet module install puppetlabs-windows
+    puppet module install puppetlabs-powershell
+    puppet module install puppetlabs-registry
+    puppet module install puppetlabs-dsc
+    puppet module install puppetlabs-chocolatey
+    puppet module install puppet-windowsfeature
+    puppet module install puppet-windows_firewall
+    #puppet module install puppet-windows_autoupdate --ignore-dependencies
+    puppet module install puppet-windows_eventlog
+    puppet module install puppet-msoffice
+    puppet module install puppet-archive
+    #puppet module install autostructure-harden_windows_server
+    # https://puppet.com/docs/puppet/5.3/modules_installing.html#installing-from-a-release-tarball
+    #puppet module install ayohrling-local_security_policy
+    #puppet module install jonono-auditpol
+    puppet module install kpn-local_security_policy
+    puppet module install autostructure-auditpol
+    puppet module install "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz" --ignore-dependencies
+    puppet module install ocastle-win_service
+    puppet module install ipcrm-registry_acl
+    puppet module install puppetlabs-iis
+    puppet module install opentable-iis_rewrite
+- copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
+- ps: Copy-Item "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource" -Destination "C:\Program Files\WindowsPowerShell\Modules" -Recurse -Container
+- ps: |
+    $msiPath = "$($env:USERPROFILE)\inspec-2.2.61-1-x64.msi"
+    (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.2.61/windows/2016/inspec-2.2.61-1-x64.msi', $msiPath)
+    cmd /c start /wait msiexec /i $msiPath /q
+- cmd: git.exe clone https://github.com/iadgov/Secure-Host-Baseline.git "%USERPROFILE%\Secure-Host-Baseline"
+- cmd: echo filetemp_path=c:\projects\puppet-meta-harden-windows\files> C:\ProgramData\PuppetLabs\facter\facts.d\filetemp.txt
+
 build: off
+
 test_script:
-- bundle exec puppet -V
-- ruby -v
-- gem -v
-- bundle -v
-- bundle exec rake spec
+- ps: |
+    puppet apply manifests/site.pp --disable_warnings deprecations --verbose
+- ps: |
+    puppet apply manifests/iis.pp --disable_warnings deprecations --verbose
+
+after_test:
+- ps: Get-NetFirewallRule -PolicyStore ActiveStore
+- ps: Get-Service
+
+on_finish:
+- ps: |
+    Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
+    Get-PSDrive -PSProvider Registry
+    New-PSDrive -Name HKCR -PSProvider Registry -Root Registry::HKEY_CLASSES_ROOT
+    Get-ChildItem -Path "HKCR:\htafile\shell\open\command" -Recurse
+    Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
+    New-PSDrive -Name HKU -PSProvider Registry -Root Registry::HKEY_USERS
+    Get-ChildItem -Path "HKU:\*\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
+    Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server"
+    True
+#- ps: |
+#    Get-CimClass -cn $env:COMPUTERNAME MSFT_DSCMetaConfiguration -name root/Microsoft/Windows/DesiredStateConfiguration | Select-Object -ExpandProperty CimClassProperties | select name
+#    Get-DscConfigurationStatus -All
+#    Get-DscResource MSFT_RoleResource
+#    Get-WinEvent -LogName "Microsoft-Windows-Dsc/Operational"
+#    True
+- ps: |
+    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources"
+    Get-ChildItem -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource"
+    True
+- ps: Get-ChildItem -Path "C:\Program Files\WindowsPowerShell\Modules"
+- ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels"
+- ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
+- ps: Get-ChildItem -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider"
+- ps: Get-ChildItem -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts"
+- ps: |
+    Set-Location -Path "$($env:USERPROFILE)\Secure-Host-Baseline\Compliance\Scripts" -PassThru
+    Import-Module -Name .\Compliance.psm1
+    #Test-Compliance -Path '..\..\Adobe Reader\Compliance\AdobeReaderDC.audit'
+    Test-Compliance -Path '..\..\Chrome\Compliance\GoogleChrome.audit' 2>&1 | Set-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    Test-Compliance -Path '..\..\EMET\\Compliance\EMET_5.5.audit' 2>&1 | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    Test-Compliance -Path '..\..\Internet Explorer\Compliance\InternetExplorer11.audit' 2>&1 | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    Test-Compliance -Path '..\..\Windows\Compliance\Windows10.audit' 2>&1 | Add-Content -Path "$($env:USERPROFILE)\iad-audit.txt"
+    True
+- ps: |
+    get-content "$($env:USERPROFILE)\iad-audit.txt"
+    (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern WARNING).length
+    (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern FAILED).length
+    True
+#- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
+- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
+- ps: Get-ChildItem -Path cert:\* -Recurse -DNSName "test.contoso.com"
+- ps: Get-ChildItem -Path "c:\inetpub" -Recurse
+- ps: Get-Content "c:\inetpub\web.config"
+#- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+on_failure:
+- cmd: puppet module list --tree
+- ps: $PSVersionTable.PSVersion
+#- ps: Get-Content -tail 1000 "C:\Windows\Logs\DISM\dism.log"
+
 notifications:
 - provider: Email
   to:
