@@ -113,7 +113,9 @@ file { "${webroot}\\web.config":
           </denyUrlSequences>
           <fileExtensions allowUnlisted="false" />
           <requestLimits maxUrl="2048" maxQueryString="1024" maxAllowedContent="30000000" />
-          <verbs allowUnlisted="false" />
+          <verbs allowUnlisted="false">
+            <add verb="TRACE" allowed="false" />
+          </verbs>
        </requestFiltering>
     </security>
 
