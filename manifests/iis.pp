@@ -112,9 +112,9 @@ file { 'c:\\inetpub\\web.config':
 # https://blogs.msdn.microsoft.com/varunm/2013/04/23/remove-unwanted-http-response-headers/
 # https://ruslany.net/2008/07/scripting-url-rewrite-module-configuration/
 # or chocolatey: urlrewrite
-class { 'iis_rewrite':
-#  package_source_location => 'http://myhost.com/package231.msi'
-}
+#class { 'iis_rewrite':
+##  package_source_location => 'http://myhost.com/package231.msi'
+#}
 
 # https://docs.microsoft.com/en-us/iis/web-hosting/web-server-for-shared-hosting/application-pool-identity-as-anonymous-user
 # https://kevinareed.com/2015/11/07/how-to-deploy-anything-in-iis-with-zero-downtime-on-a-single-server/
