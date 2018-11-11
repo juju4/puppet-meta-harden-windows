@@ -84,6 +84,10 @@ file { 'c:\\inetpub\\web.config':
       <add name=\"Content-Security-Policy\" value=\"default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'self'; upgrade-insecure-requests;\" />
       <!-- Prevents from leaking referrer data over insecure connections. ref.: https://scotthelme.co.uk/a-new-security-header-referrer-policy/ -->
       <add name=\"Referrer-Policy\" value=\"strict-origin\" />
+
+      <customHeaders>
+        <remove name="X-Powered-By" />
+      </customHeaders>
     </customHeaders>
 
     <security>
