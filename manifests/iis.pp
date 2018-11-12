@@ -63,6 +63,18 @@ acl { 'c:\\inetpub\\complete_vdir':
   ],
 }
 
+file { "${webroot}\\index.html":
+  content => "<!DOCTYPE html>
+<html>
+  <head>
+    <title>Default Root page</title>
+  </head>
+  <body>
+    <h1>Welcome! web server is configured and active. replace this page with your own content.</h1>
+  </body>
+</html>",
+}
+
 # https://www.ryadel.com/en/iis-web-config-secure-http-response-headers-pass-securityheaders-io-scan/
 # https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/
 # https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/denyurlsequences/
