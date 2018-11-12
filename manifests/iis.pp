@@ -165,6 +165,9 @@ file { "${webroot}\\web.config":
 </configuration>",
 }
 
+# FIXME!
+# appveyor: puppet : Error: Error updating apppool: Access is denied. (Exception from HRESULT: 0x80070005 (E_ACCESSDENIED))
+# vagrant: OK
 iis_application_pool { 'complete_site_app_pool':
   ensure                  => 'present',
   state                   => 'started',
