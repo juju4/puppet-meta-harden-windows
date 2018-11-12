@@ -6,8 +6,8 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "mwrock/Windows2016"
-  hardenwin.vm.hostname = "phardenwin"
-  #hardenwin.vm.network "private_network", ip: "192.168.50.100"
+  config.vm.hostname = "phardenwin"
+  #config.vm.network "private_network", ip: "192.168.50.100"
 
   config.vm.guest = :windows
   config.vm.communicator = "winrm"
@@ -49,9 +49,7 @@ puppet module install c:\\windows\\temp\\puppet-kpn-local_security_policy-3.1.1.
 puppet module install autostructure-auditpol
 puppet module install c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz --ignore-dependencies
 puppet module install ocastle-win_service
-puppet module install ipcrm-registry_acl
-puppet module install puppetlabs-iis
-puppet module install opentable-iis_rewrite
+puppet module install ipcrm-registry_acl --ignore-dependencies
 #puppet module install chocolatey-chocolatey
 EOF
   config.vm.provision "shell", inline: $modules, privileged: true
@@ -80,6 +78,5 @@ EOF
 
   # go manual road...
   config.vm.provision "shell", inline: "puppet apply --modulepath='C:/ProgramData/PuppetLabs/code/environments/production/modules;C:/ProgramData/PuppetLabs/code/modules;C:/opt/puppetlabs/puppet/modules' c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\site.pp --disable_warnings deprecations --verbose", privileged: true
-  config.vm.provision "shell", inline: "puppet apply --modulepath='C:/ProgramData/PuppetLabs/code/environments/production/modules;C:/ProgramData/PuppetLabs/code/modules;C:/opt/puppetlabs/puppet/modules' c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\iis.pp --disable_warnings deprecations --verbose", privileged: true
 
 end
