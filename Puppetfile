@@ -16,7 +16,9 @@ mod 'puppet-windows_power'
 mod 'puppet-windows_env'
 mod 'puppet-msoffice'
 mod 'puppet-archive'
-mod 'autostructure-harden_windows_server'
+mod 'autostructure-harden_windows_server',
+  :git => 'https://github.com/juju4/harden_windows_server.git',
+  :tag => 'HEAD'
 mod 'ocastle-win_service'
 mod 'ipcrm-registry_acl'
 mod 'puppetlabs-iis'
