@@ -123,28 +123,6 @@ file { "${webroot}\\web.config":
       <remove name=\"X-Powered-By\" />
     </customHeaders>
 
-    <security>
-       <requestFiltering allowHighBitCharacters=\"false\" allowDoubleEscaping=\"false\">
-          <denyUrlSequences>
-             <add sequence=\"..\" />
-             <add sequence=\":\" />
-             <add sequence=\"\\\" />
-             <add sequence=\".conf\" />
-             <add sequence=\".config\" />
-             <add sequence=\".git\" />
-             <add sequence=\".log\" />
-             <add sequence=\".old\" />
-             <add sequence=\".sec\" />
-             <add sequence=\".svn\" />
-          </denyUrlSequences>
-          <fileExtensions allowUnlisted=\"false\" />
-          <requestLimits maxUrl=\"2048\" maxQueryString=\"1024\" maxAllowedContent=\"30000000\" />
-          <verbs allowUnlisted=\"false\">
-            <add verb=\"TRACE\" allowed=\"false\" />
-          </verbs>
-       </requestFiltering>
-    </security>
-
     <rewrite>
       <rules>
         <rule name=\"Block Common Malicious Bot Queries\" stopProcessing=\"true\">
@@ -185,6 +163,28 @@ file { "${webroot}\\web.config":
     </rewrite>
 
   </httpProtocol>
+  <security>
+       <requestFiltering allowHighBitCharacters=\"false\" allowDoubleEscaping=\"false\">
+          <denyUrlSequences>
+             <add sequence=\"..\" />
+             <add sequence=\":\" />
+             <add sequence=\"\\\" />
+             <add sequence=\".conf\" />
+             <add sequence=\".config\" />
+             <add sequence=\".git\" />
+             <add sequence=\".log\" />
+             <add sequence=\".old\" />
+             <add sequence=\".sec\" />
+             <add sequence=\".svn\" />
+          </denyUrlSequences>
+          <fileExtensions allowUnlisted=\"false\" />
+          <requestLimits maxUrl=\"2048\" maxQueryString=\"1024\" maxAllowedContent=\"30000000\" />
+          <verbs allowUnlisted=\"false\">
+            <add verb=\"TRACE\" allowed=\"false\" />
+          </verbs>
+       </requestFiltering>
+  </security>
+
  </system.webServer>
 </configuration>",
 }
