@@ -216,6 +216,7 @@ node default {
     data       => 1,
   }
 
+  if ($facts['kernelmajversion'] >= 10) {
 # https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-group-membership, Win10/2016+
   auditpol { 'Group Membership':
     success => 'enable',
@@ -226,6 +227,7 @@ node default {
   auditpol { 'PNP Activity':
     success => 'enable',
     failure => 'disable',
+  }
   }
 
   auditpol { 'Removable Storage':
