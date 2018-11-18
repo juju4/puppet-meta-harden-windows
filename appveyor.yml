@@ -73,6 +73,8 @@ after_test:
 
 on_finish:
 - ps: |
+    puppet apply manifests/iis.pp --disable_warnings deprecations --verbose
+- ps: |
     Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.hta" -Recurse
     Get-PSDrive -PSProvider Registry
     New-PSDrive -Name HKCR -PSProvider Registry -Root Registry::HKEY_CLASSES_ROOT
