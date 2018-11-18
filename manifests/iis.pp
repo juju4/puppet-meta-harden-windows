@@ -163,6 +163,13 @@ file { "${webroot}\\web.config":
     </rewrite>
 
   </httpProtocol>
+
+  <defaultDocument enabled="true">
+    <files>
+      <add value="index.html" />
+    </files>
+  </defaultDocument>
+
   <security>
        <requestFiltering allowHighBitCharacters=\"false\" allowDoubleEscaping=\"false\">
           <denyUrlSequences>
