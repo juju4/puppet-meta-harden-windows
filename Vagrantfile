@@ -52,7 +52,6 @@ puppet module install c:\\windows\\temp\\autostructure-harden_windows_server-HEA
 puppet module install ocastle-win_service
 puppet module install ipcrm-registry_acl --ignore-dependencies
 puppet module install puppetlabs-iis
-puppet module install opentable-iis_rewrite --ignore-dependencies
 EOF
   config.vm.provision "shell", inline: $modules, privileged: true
 
