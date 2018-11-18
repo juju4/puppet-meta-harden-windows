@@ -50,7 +50,6 @@ install:
     puppet module install ocastle-win_service
     puppet module install ipcrm-registry_acl --ignore-dependencies
     puppet module install puppetlabs-iis
-    puppet module install opentable-iis_rewrite --ignore-dependencies
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: Copy-Item "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource" -Destination "C:\Program Files\WindowsPowerShell\Modules" -Recurse -Container
 - ps: |

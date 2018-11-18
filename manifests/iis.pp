@@ -91,6 +91,8 @@ file { "${webroot}\\index.html":
 # https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/denyurlsequences/
 # https://www.saotn.org/hackrepair-bad-bots-htaccess-web-config-iis/
 # https://www.odity.co.uk/articles/how-to-redirect-http-to-https-with-iis-rewrite-module
+# https://blogs.msdn.microsoft.com/varunm/2013/04/23/remove-unwanted-http-response-headers/
+# https://ruslany.net/2008/07/scripting-url-rewrite-module-configuration/
 file { "${webroot}\\web.config":
   content => "<configuration>
  <system.web>
@@ -249,13 +251,6 @@ iis_virtual_directory { 'vdir':
   physicalpath => 'c:\\inetpub\\complete_vdir',
   require      => File['c:\\inetpub\\complete_vdir'],
 }
-
-# https://blogs.msdn.microsoft.com/varunm/2013/04/23/remove-unwanted-http-response-headers/
-# https://ruslany.net/2008/07/scripting-url-rewrite-module-configuration/
-# or chocolatey: urlrewrite
-#class { 'iis_rewrite':
-##  package_source_location => 'http://myhost.com/package231.msi'
-#}
 
 file { "${webroot}\\.well-known":
   ensure    => directory,

@@ -20,8 +20,7 @@
     {"name":"puppet/windows_env","version_requirement":">= 3.0.0 < 6.0.0"},
     {"name":"ocastle/win_service","version_requirement":">= 0.0.10 < 6.0.0"},
     {"name":"ipcrm/registry_acl","version_requirement":">= 0.0.5 < 6.0.0"},
-    {"name":"puppetlabs/iis","version_requirement":">= 4.5.0 < 6.0.0"},
-    {"name":"opentable/iis_rewrite","version_requirement":">= 1.0.0 < 6.0.0"}
+    {"name":"puppetlabs/iis","version_requirement":">= 4.5.0 < 6.0.0"}
   ],
   "data_provider": null,
   "operatingsystem_support": [

@@ -22,4 +22,3 @@ mod 'autostructure-harden_windows_server',
 mod 'ocastle-win_service'
 mod 'ipcrm-registry_acl'
 mod 'puppetlabs-iis'
-mod 'opentable-iis_rewrite'
