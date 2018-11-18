@@ -15,6 +15,17 @@ iis_feature { $iis_features:
   include_all_subfeatures => false,
 }
 
+# https://blogs.technet.microsoft.com/srd/2012/07/26/announcing-the-availability-of-modsecurity-extension-for-iis/
+# https://azure.microsoft.com/en-us/blog/modsecurity-for-azure-websites/
+$chocolatey_packages_iis = ['modsecurity' ]
+$chocolatey_packages_iis.each |String $pkg| {
+  package { "${pkg}":
+    ensure   => latest,
+    provider => chocolatey,
+#    source   => 'https://<internal_repo>/chocolatey',
+  }
+}
+
 # Delete the default website to prevent a port binding conflict.
 iis_site {'Default Web Site':
   ensure  => absent,
