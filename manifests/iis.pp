@@ -120,9 +120,7 @@ file { "${webroot}\\web.config":
       <!-- Prevents from leaking referrer data over insecure connections. ref.: https://scotthelme.co.uk/a-new-security-header-referrer-policy/ -->
       <add name=\"Referrer-Policy\" value=\"strict-origin\" />
 
-      <customHeaders>
-        <remove name=\"X-Powered-By\" />
-      </customHeaders>
+      <remove name=\"X-Powered-By\" />
     </customHeaders>
 
     <security>
