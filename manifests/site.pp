@@ -441,28 +441,28 @@ node default {
 #    registry_value { "Extension ${ext}":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
 #      ensure     => present,
-#      value      => '(default)',
+#      value      => '(Default)',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
 #    registry_value { "Extension ${ext} OpenWithList":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
 #      ensure     => present,
 #      value      => 'a',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     dsc_registry {"registry_ext_${ext}":
       dsc_ensure => 'Present',
       dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
-      dsc_valuename => '(default)',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuename => '(Default)',
+      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
     }
     dsc_registry {"registry_ext_${ext}_OpenWithList":
       dsc_ensure => 'Present',
       dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
       dsc_valuename => 'a',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
     }
   }
 
@@ -471,15 +471,15 @@ node default {
 #    registry_value { "Extension ${extcmd}":
 #      path       => "${extcmd}",
 #      ensure     => present,
-#      value      => '(default)',
+#      value      => '(Default)',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     dsc_registry {"registry_ext_${extcmd}":
       dsc_ensure => 'Present',
       dsc_key => "${extcmd}",
-      dsc_valuename => '(default)',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuename => '(Default)',
+      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
     }
   }
 
