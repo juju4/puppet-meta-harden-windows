@@ -17,6 +17,7 @@ iis_feature { $iis_features:
 
 # https://blogs.technet.microsoft.com/srd/2012/07/26/announcing-the-availability-of-modsecurity-extension-for-iis/
 # https://azure.microsoft.com/en-us/blog/modsecurity-for-azure-websites/
+include chocolatey
 $chocolatey_packages_iis = ['modsecurity' ]
 $chocolatey_packages_iis.each |String $pkg| {
   package { "${pkg}":

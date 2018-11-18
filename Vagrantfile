@@ -37,6 +37,7 @@ puppet module install puppetlabs-windows
 puppet module install puppetlabs-powershell
 puppet module install puppetlabs-registry
 puppet module install puppetlabs-dsc
+puppet module install puppetlabs-chocolatey
 puppet module install puppet-windowsfeature
 puppet module install puppet-windows_firewall
 puppet module install puppet-windows_autoupdate
@@ -52,7 +53,6 @@ puppet module install ocastle-win_service
 puppet module install ipcrm-registry_acl --ignore-dependencies
 puppet module install puppetlabs-iis
 puppet module install opentable-iis_rewrite --ignore-dependencies
-#puppet module install chocolatey-chocolatey
 EOF
   config.vm.provision "shell", inline: $modules, privileged: true
 
