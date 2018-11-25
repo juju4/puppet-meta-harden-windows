@@ -1,4 +1,8 @@
 node default {
+  # following settings might need to be reverse if vagrant, authenticated va scan...
+  $disable_LocalAccountTokenFilterPolicy = true
+  $load_firewall_rules = true
+
   #include windows_autoupdate
   include chocolatey
 
@@ -333,10 +337,12 @@ node default {
     data       => 1,
   }
 
+  if ($disable_LocalAccountTokenFilterPolicy) {
   registry_value { 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy':
     ensure     => present,
     type       => dword,
     data       => 0,
+  }
   }
 
   # powershell-module-logging: PowerShell Module Logging
@@ -604,7 +610,6 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
     source  => "${facts['filetemp_path']}\\applocker.xml",
   }
-  # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Set-AppLockerPolicy':
     command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
     provider  => powershell,
@@ -616,9 +621,10 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
     source  => "${facts['filetemp_path']}\\firewall.wfw",
   }
-  # FIXME! maybe issue under vagrant. appveyor ok.
+  if ($load_firewall_rules) {
   exec { 'Firewall import':
     command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
+  }
   }
 
   # stig/iadgov
