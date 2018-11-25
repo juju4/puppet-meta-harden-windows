@@ -58,6 +58,13 @@ node default {
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
     # only if hyper-v is present
     configure_create_symbolic_links => false,
+
+    # 201811 secedit error but log clean...
+    configure_deny_access_to_this_computer_from_the_network => false,
+    ensure_deny_log_on_as_a_batch_job_to_include_guests => false,
+    ensure_deny_log_on_as_a_service_to_include_guests => false,
+    ensure_deny_log_on_locally_to_include_guests => false,
+    ensure_deny_log_on_through_remote_desktop_services_to_include_guests_local_account => false,
   }
 
   # requirement for powershell install
