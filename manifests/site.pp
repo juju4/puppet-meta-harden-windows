@@ -1,4 +1,8 @@
 node default {
+  # following settings might need to be reverse if vagrant, authenticated va scan...
+  $disable_LocalAccountTokenFilterPolicy = true
+  $load_firewall_rules = true
+
   #include windows_autoupdate
   include chocolatey
 
@@ -54,6 +58,13 @@ node default {
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
     # only if hyper-v is present
     configure_create_symbolic_links => false,
+
+    # 201811 secedit error but log clean...
+    configure_deny_access_to_this_computer_from_the_network => false,
+    ensure_deny_log_on_as_a_batch_job_to_include_guests => false,
+    ensure_deny_log_on_as_a_service_to_include_guests => false,
+    ensure_deny_log_on_locally_to_include_guests => false,
+    ensure_deny_log_on_through_remote_desktop_services_to_include_guests_local_account => false,
   }
 
   # requirement for powershell install
@@ -89,9 +100,13 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
     source  => "${facts['filetemp_path']}\\sysmonconfig-export.xml",
   }
-  exec { 'Load sysmon config':
-    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
+  exec { 'Enable sysmon driver':
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i',
     onlyif    => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
+  }
+  exec { 'Load sysmon config':
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -c c:\windows\temp\sysmonconfig.xml',
+    onlyif    => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -c | findstr "No rules installed"'
   }
 
   # logging
@@ -216,6 +231,7 @@ node default {
     data       => 1,
   }
 
+  if ($facts['kernelmajversion'] =~ /^10.*/) {
 # https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-group-membership, Win10/2016+
   auditpol { 'Group Membership':
     success => 'enable',
@@ -226,6 +242,7 @@ node default {
   auditpol { 'PNP Activity':
     success => 'enable',
     failure => 'disable',
+  }
   }
 
   auditpol { 'Removable Storage':
@@ -331,10 +348,12 @@ node default {
     data       => 1,
   }
 
+  if ($disable_LocalAccountTokenFilterPolicy) {
   registry_value { 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy':
     ensure     => present,
     type       => dword,
     data       => 0,
+  }
   }
 
   # powershell-module-logging: PowerShell Module Logging
@@ -439,28 +458,28 @@ node default {
 #    registry_value { "Extension ${ext}":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
 #      ensure     => present,
-#      value      => '(default)',
+#      value      => '(Default)',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
 #    registry_value { "Extension ${ext} OpenWithList":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
 #      ensure     => present,
 #      value      => 'a',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     dsc_registry {"registry_ext_${ext}":
       dsc_ensure => 'Present',
       dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
-      dsc_valuename => '(default)',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuename => '(Default)',
+      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
     }
     dsc_registry {"registry_ext_${ext}_OpenWithList":
       dsc_ensure => 'Present',
       dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
       dsc_valuename => 'a',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
     }
   }
 
@@ -469,15 +488,15 @@ node default {
 #    registry_value { "Extension ${extcmd}":
 #      path       => "${extcmd}",
 #      ensure     => present,
-#      value      => '(default)',
+#      value      => '(Default)',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     dsc_registry {"registry_ext_${extcmd}":
       dsc_ensure => 'Present',
       dsc_key => "${extcmd}",
-      dsc_valuename => '(default)',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuename => '(Default)',
+      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
     }
   }
 
@@ -602,7 +621,6 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
     source  => "${facts['filetemp_path']}\\applocker.xml",
   }
-  # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Set-AppLockerPolicy':
     command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
     provider  => powershell,
@@ -614,9 +632,10 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
     source  => "${facts['filetemp_path']}\\firewall.wfw",
   }
-  # FIXME! maybe issue under vagrant. appveyor ok.
+  if ($load_firewall_rules) {
   exec { 'Firewall import':
     command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
+  }
   }
 
   # stig/iadgov
