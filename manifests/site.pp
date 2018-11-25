@@ -390,9 +390,9 @@ node default {
     data       => 1,
   }
   # FIXME! nok windowsfeature, nok dsc_windowsfeature...
-  windowsfeature { 'MicrosoftWindowsPowerShellV2':
-    ensure => absent,
-  }
+#  windowsfeature { 'MicrosoftWindowsPowerShellV2':
+#    ensure => absent,
+#  }
 #  dsc_windowsfeature {'MicrosoftWindowsPowerShellV2':
 #    dsc_ensure => 'absent',
 #    dsc_name   => 'MicrosoftWindowsPowerShellV2',
@@ -507,9 +507,9 @@ node default {
     data       => 0,
   }
   # FIXME!
-  windowsfeature { 'SMB1Protocol':
-    ensure => absent,
-  }
+#  windowsfeature { 'SMB1Protocol':
+#    ensure => absent,
+#  }
 #  dsc_windowsfeature {'SMB1Protocol':
 #    dsc_ensure => 'absent',
 #    dsc_name   => 'SMB1Protocol',
