@@ -22,9 +22,9 @@ install:
     (New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.5.6-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q /L* c:\install-puppet.log
 - ps: |
-    (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz")
+    (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/devel-puppetrun.tar.gz', "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz")
 - ps: |
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/puppet-kpn-local_security_policy/archive/master.tar.gz', "$($env:USERPROFILE)\puppet-kpn-local_security_policy-HEAD.tar.gz")
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/puppet-kpn-local_security_policy/archive/master.tar.gz', "$($env:USERPROFILE)\kpn-local_security_policy-HEAD.tar.gz")
 
 - ps: |
     puppet config print config
