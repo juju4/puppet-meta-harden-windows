@@ -93,9 +93,13 @@ node default {
 #    source  => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
     source  => "${facts['filetemp_path']}\\sysmonconfig-export.xml",
   }
-  exec { 'Load sysmon config':
-    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
+  exec { 'Enable sysmon driver':
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i',
     onlyif    => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
+  }
+  exec { 'Load sysmon config':
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -c c:\windows\temp\sysmonconfig.xml',
+    onlyif    => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -c | findstr "No rules installed"'
   }
 
   # logging
