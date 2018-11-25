@@ -393,10 +393,10 @@ node default {
 #  windowsfeature { 'MicrosoftWindowsPowerShellV2':
 #    ensure => absent,
 #  }
-#  dsc_windowsfeature {'MicrosoftWindowsPowerShellV2':
-#    dsc_ensure => 'absent',
-#    dsc_name   => 'MicrosoftWindowsPowerShellV2',
-#  }
+  dsc_windowsfeature {'MicrosoftWindowsPowerShellV2':
+    dsc_ensure => 'absent',
+    dsc_name   => 'MicrosoftWindowsPowerShellV2',
+  }
 
   # microsoft-online-accounts: Microsoft Online Accounts
   registry_key { 'HKLM\SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowYourAccount':
@@ -510,10 +510,10 @@ node default {
 #  windowsfeature { 'SMB1Protocol':
 #    ensure => absent,
 #  }
-#  dsc_windowsfeature {'SMB1Protocol':
-#    dsc_ensure => 'absent',
-#    dsc_name   => 'SMB1Protocol',
-#  }
+  dsc_windowsfeature {'SMB1Protocol':
+    dsc_ensure => 'absent',
+    dsc_name   => 'SMB1Protocol',
+  }
 
   # wpad-101: WPAD mitigations
   registry_key { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad':
