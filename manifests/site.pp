@@ -501,8 +501,8 @@ node default {
 #      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     exec {"registry_ext_${extcmd}":
-      command => "C:\Windows\System32\reg.exe add ${extcmd} /v '(Default)' /t REG_SZ /d '\"%windir%\system32\notepad.exe\" ^%1' /f",
-      unless => "C:\Windows\System32\reg.exe query ${extcmd} /v '(Default)'",
+      command => "C:\\Windows\\System32\\reg.exe add ${extcmd} /v '(Default)' /t REG_SZ /d '\"%windir%\\system32\\notepad.exe\" ^%1' /f",
+      unless => "C:\\Windows\\System32\\reg.exe query ${extcmd} /v '(Default)'",
     }
   }
 
