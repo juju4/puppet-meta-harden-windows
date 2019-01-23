@@ -483,8 +483,8 @@ node default {
     }
   }
 
-  $dangerousextcmd = ['HKCR:\\htafile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\edit\\command', 'HKCR:\\VBSFile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\open2\\command', 'HKCR:\\VBEFile\\shell\\edit\\command', 'HKCR:\\VBEFile\\shell\\open\\command', 'HKCR:\\VBEFile\\shell\\open2\\command', 'HKCR:\\JSFile\\shell\\open\\command', 'HKCR:\\JSEFile\\shell\\open\\command', 'HKCR:\\wshfile\\shell\\open\\command', 'HKCR:\\scriptletfile\\shell\\open\\command' ]
-  #$dangerousextcmd = ['HKCR\\htafile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\edit\\command', 'HKCR\\VBSFile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\open2\\command', 'HKCR\\VBEFile\\shell\\edit\\command', 'HKCR\\VBEFile\\shell\\open\\command', 'HKCR\\VBEFile\\shell\\open2\\command', 'HKCR\\JSFile\\shell\\open\\command', 'HKCR\\JSEFile\\shell\\open\\command', 'HKCR\\wshfile\\shell\\open\\command', 'HKCR\\scriptletfile\\shell\\open\\command' ]
+  #$dangerousextcmd = ['HKCR:\\htafile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\edit\\command', 'HKCR:\\VBSFile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\open2\\command', 'HKCR:\\VBEFile\\shell\\edit\\command', 'HKCR:\\VBEFile\\shell\\open\\command', 'HKCR:\\VBEFile\\shell\\open2\\command', 'HKCR:\\JSFile\\shell\\open\\command', 'HKCR:\\JSEFile\\shell\\open\\command', 'HKCR:\\wshfile\\shell\\open\\command', 'HKCR:\\scriptletfile\\shell\\open\\command' ]
+  $dangerousextcmd = ['HKCR\\htafile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\edit\\command', 'HKCR\\VBSFile\\shell\\open\\command', 'HKCR\\VBSFile\\shell\\open2\\command', 'HKCR\\VBEFile\\shell\\edit\\command', 'HKCR\\VBEFile\\shell\\open\\command', 'HKCR\\VBEFile\\shell\\open2\\command', 'HKCR\\JSFile\\shell\\open\\command', 'HKCR\\JSEFile\\shell\\open\\command', 'HKCR\\wshfile\\shell\\open\\command', 'HKCR\\scriptletfile\\shell\\open\\command' ]
   $dangerousextcmd.each |String $extcmd| {
   # FIXME! neither registry_value, nor dsc_registry works with HKCR
 #    registry_value { "Extension ${extcmd}":
@@ -501,9 +501,8 @@ node default {
 #      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     exec {"registry_ext_${extcmd}":
-      command => "Set-ItemProperty -Path ${extcmd} -Name '(Default)' -Value \"\\\"^%windir^%\\system32\\notepad.exe\\\" ^%1\"",
-      #unless => "Get-ItemProperty -Path ${extcmd} -Name '(Default)'",
-      provider  => powershell,
+      command => "C:\\Windows\\System32\\reg.exe add ${extcmd} /v '(Default)' /t REG_SZ /d \"\\\"^%windir^%\\system32\\notepad.exe\\\" ^%1\" /f",
+      unless => "C:\\Windows\\System32\\reg.exe query ${extcmd} /v '(Default)'",
       logoutput => true,
     }
   }
