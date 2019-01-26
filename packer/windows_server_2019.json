@@ -52,7 +52,6 @@
       "disk_size": 61440,
       "floppy_files": [
         "./Autounattend.xml",
-        "../test/vagrant/ConfigureRemotingForAnsible.ps1",
         "./oracle-cert.cer"
       ],
       "vmx_data": {
