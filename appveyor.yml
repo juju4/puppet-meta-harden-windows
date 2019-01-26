@@ -110,7 +110,7 @@ on_finish:
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern WARNING).length
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern FAILED).length
     True
-- cmd: c:\opscode\inspec\bin\inspec.bat exec test\inspec --attrs test\inspec\profile-attributes-Windows.yml | tee c:\inspec.log
+- cmd: c:\opscode\inspec\bin\inspec.bat exec %APPVEYOR_BUILD_FOLDER%\test\inspec --attrs %APPVEYOR_BUILD_FOLDER%\test\inspec\profile-attributes-Windows.yml | tee c:\inspec.log
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 on_failure:
