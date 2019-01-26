@@ -7,4 +7,4 @@ supports:
 - os-family: windows
 depends:
 - name: windows-baseline
-  url: https://github.com/juju4/linux-baseline/archive/master.tar.gz
+  url: https://github.com/juju4/windows-baseline/archive/master.tar.gz
