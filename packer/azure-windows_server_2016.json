@@ -78,8 +78,16 @@
         "cmd /c \"whoami\"",
         "cmd /c \"net users\"",
         "cmd /c start /wait /B msiexec /i c:\\windows\\temp\\puppet-agent-5.5.0-x64.msi /q /L* c:\\install-puppet.log",
+        "md C:\\ProgramData\\PuppetLabs\\facter\\facts.d",
+        "echo filetemp_path=c:\\windows\\temp> C:\\ProgramData\\PuppetLabs\\facter\\facts.d\\filetemp.txt",
         "whoami",
         "set"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "facter"
       ]
     },
     {
@@ -169,7 +177,25 @@
     {
       "type": "windows-shell",
       "inline": [
-        "puppet module install autostructure-harden_windows_server"
+        "puppet module install kpn-local_security_policy"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install autostructure-auditpol"
+      ]
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', \"c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz\")"
+      ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "puppet module install c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz --ignore-dependencies"
       ]
     },
     {

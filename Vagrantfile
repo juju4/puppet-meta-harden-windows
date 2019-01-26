@@ -51,6 +51,7 @@ puppet module install autostructure-auditpol
 puppet module install c:\\windows\\temp\\autostructure-harden_windows_server-HEAD.tar.gz --ignore-dependencies
 puppet module install ocastle-win_service
 puppet module install ipcrm-registry_acl --ignore-dependencies
+#puppet module install chocolatey-chocolatey
 puppet module install puppetlabs-iis
 EOF
   config.vm.provision "shell", inline: $modules, privileged: true
@@ -80,6 +81,5 @@ EOF
 
   # go manual road...
   config.vm.provision "shell", inline: "puppet apply --modulepath='C:/ProgramData/PuppetLabs/code/environments/production/modules;C:/ProgramData/PuppetLabs/code/modules;C:/opt/puppetlabs/puppet/modules' c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\site.pp --disable_warnings deprecations --verbose", privileged: true
-  config.vm.provision "shell", inline: "puppet apply --modulepath='C:/ProgramData/PuppetLabs/code/environments/production/modules;C:/ProgramData/PuppetLabs/code/modules;C:/opt/puppetlabs/puppet/modules' c:\\ProgramData\\PuppetLabs\\code\\environments\\production\\manifests\\iis.pp --disable_warnings deprecations --verbose", privileged: true
 
 end

@@ -1,4 +1,8 @@
 node default {
+  # following settings might need to be reverse if vagrant, authenticated va scan...
+  $disable_LocalAccountTokenFilterPolicy = true
+  $load_firewall_rules = true
+
   #include windows_autoupdate
   include chocolatey
 
@@ -52,8 +56,19 @@ node default {
     ensure_act_as_part_of_the_operating_system_is_set_to_no_one => false,
     configure_access_this_computer_from_the_network => false,
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
+    # FIXME! not applied
+    ensure_account_lockout_threshold_is_set_to_10_or_fewer_invalid_logon_attempts_but_not_0 => true,
+    # FIXME! not applied
+    ensure_maximum_password_age_is_set_to_60_or_fewer_days_but_not_0 => true,
     # only if hyper-v is present
     configure_create_symbolic_links => false,
+
+    # 201811 secedit error but log clean...
+    configure_deny_access_to_this_computer_from_the_network => false,
+    ensure_deny_log_on_as_a_batch_job_to_include_guests => false,
+    ensure_deny_log_on_as_a_service_to_include_guests => false,
+    ensure_deny_log_on_locally_to_include_guests => false,
+    ensure_deny_log_on_through_remote_desktop_services_to_include_guests_local_account => false,
   }
 
   # requirement for powershell install
@@ -66,6 +81,7 @@ node default {
   # chocolatey install (default for Windows)
   $chocolatey_packages = ['powershell', 'osquery', 'git', 'sysinternals' ]
 # FIXME! vagrant crash with chocolatey packages install. appveyor OK
+# FIXME! LAPS not available/pending package fix https://chocolatey.org/packages/laps
 #  $chocolatey_packages = []
   $chocolatey_packages.each |String $pkg| {
     package { "${pkg}":
@@ -79,18 +95,22 @@ node default {
       provider => chocolatey,
 #      source   => 'https://<internal_repo>/chocolatey',
 # https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon v8.0 vs https://chocolatey.org/packages/sysmon 7.01
-      install_options   => ['--checksum64', '706F3D26475C8CCC0252E9E4FC7D5BF7CBAB872094ED52BB267DA45022BD6533', '--checksum', '706F3D26475C8CCC0252E9E4FC7D5BF7CBAB872094ED52BB267DA45022BD6533']
+      install_options   => ['--checksum64', '1B14281248D85D8E17DBA1AE0D9401EAE226DA06A80BF05B3261A5C1A980BB67', '--checksum', '1B14281248D85D8E17DBA1AE0D9401EAE226DA06A80BF05B3261A5C1A980BB67']
   }
 
   file { 'sysmonconfig.xml':
     path    => 'c:/windows/temp/sysmonconfig.xml',
     ensure  => file,
 #    source  => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
-    source  => "c:/projects/puppet-meta-harden-windows/files/sysmonconfig-export.xml",
+    source  => "${facts['filetemp_path']}\\sysmonconfig-export.xml",
+  }
+  exec { 'Enable sysmon driver':
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i',
+    onlyif    => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
   }
   exec { 'Load sysmon config':
-    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i c:\windows\temp\sysmonconfig.xml',
-    onlyif    => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
+    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -c c:\windows\temp\sysmonconfig.xml',
+    onlyif    => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -c | findstr "No rules installed"'
   }
 
   # logging
@@ -215,6 +235,35 @@ node default {
     data       => 1,
   }
 
+  if ($facts['kernelmajversion'] =~ /^10.*/) {
+# https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-group-membership, Win10/2016+
+  auditpol { 'Group Membership':
+    success => 'enable',
+    failure => 'disable',
+  }
+
+# https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-pnp-activity, Win10/2016+
+  auditpol { 'PNP Activity':
+    success => 'enable',
+    failure => 'disable',
+  }
+  }
+
+  auditpol { 'Removable Storage':
+    success => 'enable',
+    failure => 'enable',
+  }
+
+  auditpol { 'Other Account Logon Events':
+    success => 'enable',
+    failure => 'enable',
+  }
+
+  auditpol { 'Distribution Group Management':
+    success => 'enable',
+    failure => 'enable',
+  }
+
   #  windows-ie
   registry_key { 'HKLM\Software\Policies\Microsoft\Internet Explorer\Main':
     ensure => present,
@@ -244,6 +293,7 @@ node default {
   }
 
   # windows-account
+# FIXME! not applied
   local_security_policy { 'Allow log on through Remote Desktop Services':
     ensure         => 'present',
     policy_setting => 'SeRemoteInteractiveLogonRight',
@@ -302,10 +352,12 @@ node default {
     data       => 1,
   }
 
+  if ($disable_LocalAccountTokenFilterPolicy) {
   registry_value { 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy':
     ensure     => present,
     type       => dword,
     data       => 0,
+  }
   }
 
   # powershell-module-logging: PowerShell Module Logging
@@ -410,46 +462,45 @@ node default {
 #    registry_value { "Extension ${ext}":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
 #      ensure     => present,
-#      value      => '(default)',
+#      value      => '(Default)',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
 #    registry_value { "Extension ${ext} OpenWithList":
 #      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
 #      ensure     => present,
 #      value      => 'a',
 #      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
+#      data       => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     dsc_registry {"registry_ext_${ext}":
       dsc_ensure => 'Present',
       dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
-      dsc_valuename => '(default)',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuename => '(Default)',
+      dsc_valuedata => '"%windir%\system32\notepad.exe" "%1"',
     }
     dsc_registry {"registry_ext_${ext}_OpenWithList":
       dsc_ensure => 'Present',
       dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
       dsc_valuename => 'a',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+      dsc_valuedata => '"%windir%\system32\notepad.exe" "%1"',
     }
   }
 
   $dangerousextcmd = ['HKCR:\\htafile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\edit\\command', 'HKCR:\\VBSFile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\open2\\command', 'HKCR:\\VBEFile\\shell\\edit\\command', 'HKCR:\\VBEFile\\shell\\open\\command', 'HKCR:\\VBEFile\\shell\\open2\\command', 'HKCR:\\JSFile\\shell\\open\\command', 'HKCR:\\JSEFile\\shell\\open\\command', 'HKCR:\\wshfile\\shell\\open\\command', 'HKCR:\\scriptletfile\\shell\\open\\command' ]
   $dangerousextcmd.each |String $extcmd| {
-#    registry_value { "Extension ${extcmd}":
-#      path       => "${extcmd}",
-#      ensure     => present,
-#      value      => '(default)',
-#      type       => string,
-#      data       => '%windir%\system32\notepad.exe',
-#    }
-    dsc_registry {"registry_ext_${extcmd}":
-      dsc_ensure => 'Present',
-      dsc_key => "${extcmd}",
-      dsc_valuename => '(default)',
-      dsc_valuedata => '%windir%\system32\notepad.exe',
+    registry::value { "Extension ${extcmd}":
+      key        => "${extcmd}",
+      value      => '(Default)',
+      type       => string,
+      data       => '"%windir%\system32\notepad.exe" "%1"',
     }
+#    dsc_registry {"registry_ext_${extcmd}":
+#      dsc_ensure => 'Present',
+#      dsc_key => "${extcmd}",
+#      dsc_valuename => '(Default)',
+#      dsc_valuedata => '\"%windir%\system32\notepad.exe\" %1',
+#    }
   }
 
   # services-1: Services to be disabled
@@ -571,9 +622,8 @@ node default {
     path    => 'c:/windows/temp/applocker.xml',
     ensure  => file,
 #    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
-    source  => "c:/projects/puppet-meta-harden-windows/files/applocker.xml",
+    source  => "${facts['filetemp_path']}\\applocker.xml",
   }
-  # FIXME! maybe issue under vagrant. appveyor ok.
   exec { 'Set-AppLockerPolicy':
     command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
     provider  => powershell,
@@ -583,11 +633,12 @@ node default {
     path    => 'c:/windows/temp/firewall.wfw',
     ensure  => file,
 #    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
-    source  => "c:/projects/puppet-meta-harden-windows/files/firewall.wfw",
+    source  => "${facts['filetemp_path']}\\firewall.wfw",
   }
-  # FIXME! maybe issue under vagrant. appveyor ok.
+  if ($load_firewall_rules) {
   exec { 'Firewall import':
     command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
+  }
   }
 
   # stig/iadgov
@@ -881,6 +932,38 @@ node default {
     dsc_ensure => 'Present',
     dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork',
     dsc_valuename => 'RequireSecurityDevice',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Signing in using a PIN must be turned off.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
+    dsc_valuename => 'AllowDomainPINLogon',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"The system must be configured to prevent the storage of passwords and credentials.":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa',
+    dsc_valuename => 'DisableDomainCreds',
+    dsc_valuedata => '1',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Disable Windows Script Host":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
+    dsc_valuename => 'Enabled',
+    dsc_valuedata => '0',
+    dsc_valuetype => 'Dword',
+  }
+
+  dsc_registry {"Disable Windows Script Host - IgnoreUserSettings":
+    dsc_ensure => 'Present',
+    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
+    dsc_valuename => 'IgnoreUserSettings',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }

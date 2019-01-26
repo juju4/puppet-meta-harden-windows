@@ -18,11 +18,14 @@ install:
 - ps: |
     dism /online /get-features
     dism /online /Enable-Feature /All /FeatureName:ManagementOdata
-    $msiPath = "$($env:USERPROFILE)\puppet-agent-5.5.6-x64.msi"
-    (New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.5.6-x64.msi', $msiPath)
+    $msiPath = "$($env:USERPROFILE)\puppet-agent-5.5.8-x64.msi"
+    (New-Object Net.WebClient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.5.8-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q /L* c:\install-puppet.log
 - ps: |
-    (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/master.tar.gz', "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz")
+    (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/harden_windows_server/archive/devel-puppetrun.tar.gz', "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz")
+- ps: |
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/juju4/puppet-kpn-local_security_policy/archive/master.tar.gz', "$($env:USERPROFILE)\kpn-local_security_policy-HEAD.tar.gz")
+
 - ps: |
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://github.com/kpn-puppet/puppet-kpn-local_security_policy/archive/3.1.1.tar.gz', "$($env:USERPROFILE)\puppet-kpn-local_security_policy-3.1.1.tar.gz")
 - ps: |
@@ -30,6 +33,7 @@ install:
     puppet config print modulepath
     puppet module install puppetlabs-windows
     puppet module install puppetlabs-powershell
+    puppet module install puppetlabs-stdlib
     puppet module install puppetlabs-registry
     puppet module install puppetlabs-dsc
     puppet module install puppetlabs-chocolatey
@@ -43,7 +47,7 @@ install:
     # https://puppet.com/docs/puppet/5.3/modules_installing.html#installing-from-a-release-tarball
     #puppet module install ayohrling-local_security_policy
     #puppet module install jonono-auditpol
-    puppet module install "$($env:USERPROFILE)\puppet-kpn-local_security_policy-3.1.1.tar.gz" --ignore-dependencies
+    puppet module install "$($env:USERPROFILE)\kpn-local_security_policy-HEAD.tar.gz" --ignore-dependencies
     #puppet module install kpn-local_security_policy
     puppet module install autostructure-auditpol
     puppet module install "$($env:USERPROFILE)\autostructure-harden_windows_server-HEAD.tar.gz" --ignore-dependencies
@@ -53,8 +57,8 @@ install:
 - copy /y hiera.yaml C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml
 - ps: Copy-Item "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DscResources\MSFT_RoleResource" -Destination "C:\Program Files\WindowsPowerShell\Modules" -Recurse -Container
 - ps: |
-    $msiPath = "$($env:USERPROFILE)\inspec-2.2.61-1-x64.msi"
-    (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/2.2.61/windows/2016/inspec-2.2.61-1-x64.msi', $msiPath)
+    $msiPath = "$($env:USERPROFILE)\inspec-3.3.14-1-x64.msi"
+    (New-Object Net.WebClient).DownloadFile('https://packages.chef.io/files/stable/inspec/3.3.14/windows/2016/inspec-3.3.14-1-x64.msi', $msiPath)
     cmd /c start /wait msiexec /i $msiPath /q
 - cmd: git.exe clone https://github.com/iadgov/Secure-Host-Baseline.git "%USERPROFILE%\Secure-Host-Baseline"
 - cmd: echo filetemp_path=c:\projects\puppet-meta-harden-windows\files> C:\ProgramData\PuppetLabs\facter\facts.d\filetemp.txt
@@ -113,8 +117,7 @@ on_finish:
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern WARNING).length
     (get-content "$($env:USERPROFILE)\iad-audit.txt" | select-string -pattern FAILED).length
     True
-#- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/dev-sec/windows-baseline/
-- cmd: c:\opscode\inspec\bin\inspec.bat exec https://github.com/juju4/windows-baseline/
+- cmd: c:\opscode\inspec\bin\inspec.bat exec %APPVEYOR_BUILD_FOLDER%\test\inspec --attrs %APPVEYOR_BUILD_FOLDER%\test\inspec\profile-attributes-Windows.yml | tee c:\inspec.log
 - ps: Get-ChildItem -Path cert:\* -Recurse -DNSName "test.contoso.com"
 - ps: Get-ChildItem -Path "c:\inetpub" -Recurse
 - ps: Get-Content "c:\inetpub\web.config"
@@ -132,8 +135,10 @@ on_finish:
 
 on_failure:
 - cmd: puppet module list --tree
+- cmd: facter
 - ps: $PSVersionTable.PSVersion
-#- ps: Get-Content -tail 1000 "C:\Windows\Logs\DISM\dism.log"
+- ps: Get-Content -tail 1000 "C:\Windows\Logs\DISM\dism.log"
+- ps: Get-Content -tail 1000 "C:\Windows\security\logs\scesrv.log"
 
 notifications:
 - provider: Email
