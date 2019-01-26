@@ -57,6 +57,7 @@ node default {
     configure_access_this_computer_from_the_network => false,
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
     ensure_account_lockout_threshold_is_set_to_10_or_fewer_invalid_logon_attempts_but_not_0 => true,
+    ensure_maximum_password_age_is_set_to_60_or_fewer_days_but_not_0 => true,
     # only if hyper-v is present
     configure_create_symbolic_links => false,
 
