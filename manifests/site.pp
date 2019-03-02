@@ -95,7 +95,7 @@ node default {
       provider => chocolatey,
 #      source   => 'https://<internal_repo>/chocolatey',
 # https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon v8.0 vs https://chocolatey.org/packages/sysmon 7.01
-      install_options   => ['--checksum64', '1B14281248D85D8E17DBA1AE0D9401EAE226DA06A80BF05B3261A5C1A980BB67', '--checksum', '1B14281248D85D8E17DBA1AE0D9401EAE226DA06A80BF05B3261A5C1A980BB67']
+      install_options   => ['--checksum64', 'ED271B81EEE546F492F25B10CDF99FFCFF5670FA502FDF21151C18157B826F39', '--checksum', 'ED271B81EEE546F492F25B10CDF99FFCFF5670FA502FDF21151C18157B826F39']
   }
 
   file { 'sysmonconfig.xml':
