@@ -13,19 +13,17 @@ install:
   - which ruby
   - which gem
   - ruby --version
-  - '__rvm_unload && puppet --version'
-  - which ruby
-  - which gem
-  - ruby --version
-  - source ~/.rvm/scripts/rvm
   - gem install puppet-lint
+  - 'puppet-lint --no-140chars-check manifests/site.pp || true'
 
 # https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
 script:
   - __rvm_unload
+  - which ruby
+  - which gem
+  - ruby --version
+  - puppet --version
   - 'puppet parser validate manifests/site.pp || true'
-  - source ~/.rvm/scripts/rvm
-  - 'puppet-lint --no-140chars-check manifests/site.pp || true'
 
 after_script:
   - dpkg -L puppetserver
