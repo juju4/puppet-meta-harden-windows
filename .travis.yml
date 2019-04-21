@@ -13,7 +13,7 @@ install:
   - which ruby
   - ruby --version
   - '__rvm_unload && puppet --version'
-  - gem install puppet-lint
+  - puppet gem install puppet-lint
 
 # https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
 script:
