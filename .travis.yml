@@ -5,7 +5,8 @@ install:
   - wget https://apt.puppetlabs.com/puppet6-release-xenial.deb
   - sudo dpkg -i puppet6-release-xenial.deb
   - sudo apt-get update
-  - sudo apt-get install puppet
+  - sudo apt-get install puppetserver puppet-agent
+  - puppet --version
   - gem install puppet-lint
 
 # https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
