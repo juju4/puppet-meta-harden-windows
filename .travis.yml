@@ -22,7 +22,9 @@ install:
 
 # https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
 script:
+  - __rvm_unload
   - 'puppet parser validate manifests/site.pp || true'
+  - source ~/.rvm/scripts/rvm
   - 'puppet-lint --no-140chars-check manifests/site.pp || true'
 
 after_script:
