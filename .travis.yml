@@ -11,8 +11,13 @@ install:
   - sudo apt-get install puppetserver puppet-agent
   - env
   - which ruby
+  - which gem
   - ruby --version
   - '__rvm_unload && puppet --version'
+  - which ruby
+  - which gem
+  - ruby --version
+  - source ~/.rvm/scripts/rvm
   - gem install puppet-lint
 
 # https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
