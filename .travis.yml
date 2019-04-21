@@ -1,0 +1,30 @@
+---
+dist: xenial
+
+env:
+  - PATH=/opt/puppetlabs/puppet/bin:/opt/puppetlabs/server/bin:$PATH
+
+install:
+  - wget https://apt.puppetlabs.com/puppet6-release-xenial.deb
+  - sudo dpkg -i puppet6-release-xenial.deb
+  - sudo apt-get update
+  - sudo apt-get install puppetserver puppet-agent
+  - env
+  - which ruby
+  - which gem
+  - ruby --version
+  - gem install puppet-lint
+
+# https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
+script:
+  - 'puppet-lint --no-140chars-check manifests/site.pp || true'
+  - __rvm_unload
+  - which ruby
+  - which gem
+  - ruby --version
+  - puppet --version
+  - 'puppet parser validate manifests/site.pp || true'
+
+after_script:
+  - dpkg -L puppetserver
+  - dpkg -L puppet-agent

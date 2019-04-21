@@ -74,8 +74,8 @@ node default {
   # requirement for powershell install
   dsc_service{'wuauserv':
     dsc_startuptype => 'Automatic',
-    dsc_name => 'wuauserv',
-    dsc_state  => 'Running'
+    dsc_name        => 'wuauserv',
+    dsc_state       => 'Running'
   }
 
   # chocolatey install (default for Windows)
@@ -84,63 +84,62 @@ node default {
 # FIXME! LAPS not available/pending package fix https://chocolatey.org/packages/laps
 #  $chocolatey_packages = []
   $chocolatey_packages.each |String $pkg| {
-    package { "${pkg}":
+    package { $pkg:
       ensure   => latest,
       provider => chocolatey,
 #      source   => 'https://<internal_repo>/chocolatey',
     }
   }
-  package { "sysmon":
-      ensure   => latest,
-      provider => chocolatey,
-#      source   => 'https://<internal_repo>/chocolatey',
-# https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon v8.0 vs https://chocolatey.org/packages/sysmon 7.01
-      install_options   => ['--checksum64', 'ED271B81EEE546F492F25B10CDF99FFCFF5670FA502FDF21151C18157B826F39', '--checksum', 'ED271B81EEE546F492F25B10CDF99FFCFF5670FA502FDF21151C18157B826F39']
+  package { 'sysmon':
+      ensure          => latest,
+      provider        => chocolatey,
+#      source          => 'https://<internal_repo>/chocolatey',
+      install_options => ['--checksum64', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7', '--checksum', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7']
   }
 
   file { 'sysmonconfig.xml':
-    path    => 'c:/windows/temp/sysmonconfig.xml',
-    ensure  => file,
-#    source  => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
-    source  => "${facts['filetemp_path']}\\sysmonconfig-export.xml",
+    ensure => file,
+    path   => 'c:/windows/temp/sysmonconfig.xml',
+#    source => "puppet:///modules/puppet-meta-harden-windows/sysmonconfig-export.xml",
+    source => "${facts['filetemp_path']}\\sysmonconfig-export.xml",
   }
   exec { 'Enable sysmon driver':
-    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i',
-    onlyif    => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
+    command => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -accepteula -i',
+    onlyif  => 'C:\Windows\System32\cmd.exe /c "if exist "c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe" (exit 0) else (exit 1)"'
   }
   exec { 'Load sysmon config':
-    command   => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -c c:\windows\temp\sysmonconfig.xml',
-    onlyif    => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -c | findstr "No rules installed"'
+    command => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -n -c c:\windows\temp\sysmonconfig.xml',
+    onlyif  => 'c:\ProgramData\chocolatey\lib\sysmon\tools\sysmon.exe -c | findstr "No rules installed"'
   }
 
   # logging
   windows_eventlog { 'Application':
-    log_path => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
+    log_path       => '%SystemRoot%\system32\winevt\Logs\Application.evtx',
     # 512MB
-    log_size => '536870912',
+    log_size       => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'System':
-    log_path => '%SystemRoot%\system32\winevt\Logs\System.evtx',
-    log_size => '536870912',
+    log_path       => '%SystemRoot%\system32\winevt\Logs\System.evtx',
+    log_size       => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'Security':
-    log_path => '%SystemRoot%\system32\winevt\Logs\Security.evtx',
-    log_size => '536870912',
+    log_path       => '%SystemRoot%\system32\winevt\Logs\Security.evtx',
+    log_size       => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'Setup':
-    log_path => '%SystemRoot%\system32\winevt\Logs\Setup.evtx',
-    log_size => '536870912',
+    log_path       => '%SystemRoot%\system32\winevt\Logs\Setup.evtx',
+    log_size       => '536870912',
     max_log_policy => 'overwrite'
   }
 
   windows_eventlog { 'Windows Powershell':
-    log_size => '536870912',
+    log_size       => '536870912',
     max_log_policy => 'overwrite'
   }
 
@@ -151,9 +150,9 @@ node default {
 #      log_size => '536870912',
 #      max_log_policy => 'overwrite'
 #    }
-    dsc_registry {"${log}":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
+    dsc_registry {$log:
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
       dsc_valuename => 'MaxSize',
       dsc_valuedata => '536870912',
       dsc_valuetype => 'Dword',
@@ -191,32 +190,32 @@ node default {
 #  }
   dsc_service{'iphlpsvc':
     dsc_startuptype => 'Disabled',
-    dsc_name => 'iphlpsvc',
-    dsc_state  => 'stopped'
+    dsc_name        => 'iphlpsvc',
+    dsc_state       => 'stopped'
   }
   dsc_service{'WinHttpAutoProxySvc':
     dsc_startuptype => 'Disabled',
-    dsc_name => 'WinHttpAutoProxySvc',
-    dsc_state  => 'stopped'
+    dsc_name        => 'WinHttpAutoProxySvc',
+    dsc_state       => 'stopped'
   }
 
   # windows-base
   registry_value { 'HKLM\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionShares':
-    ensure     => present,
-    type       => array,
-    data       => [''],
+    ensure => present,
+    type   => array,
+    data   => [''],
   }
 
   registry_value { 'HKLM\System\CurrentControlSet\Control\Lsa\MSV1_0\NtlmMinClientSec':
-    ensure     => present,
-    type       => dword,
-    data       => 537395248,
+    ensure => present,
+    type   => dword,
+    data   => 537395248,
   }
 
   registry_value { 'HKLM\System\CurrentControlSet\Control\Lsa\MSV1_0\NtlmMinServerSec':
-    ensure     => present,
-    type       => dword,
-    data       => 537395248,
+    ensure => present,
+    type   => dword,
+    data   => 537395248,
   }
 
   # windows-audit
@@ -224,15 +223,15 @@ node default {
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe\AuditLevel':
-    ensure     => present,
-    type       => dword,
-    data       => 8,
+    ensure => present,
+    type   => dword,
+    data   => 8,
   }
 
   registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit\ProcessCreationIncludeCmdLine_Enabled':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
   if ($facts['kernelmajversion'] =~ /^10.*/) {
@@ -269,17 +268,17 @@ node default {
     ensure => present,
   }
   registry_value { 'HKLM\Software\Policies\Microsoft\Internet Explorer\Main\Isolation64Bit':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
   registry_key { 'HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3':
     ensure => present,
   }
   registry_value { 'HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3\270C':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
 
   # laps
@@ -287,9 +286,9 @@ node default {
     ensure => present,
   }
   registry_value { 'HKLM\Software\Microsoft\Policies\Microsoft Services\AdmPwd\AdmPwdEnabled':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
   # windows-account
@@ -334,29 +333,29 @@ node default {
     ensure => present,
   }
   registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\DNSClient\EnableMulticast':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
 
   # Mimikatz protection
   registry_value { 'HKLM\System\CurrentControlSet\Control\SecurityProviders\WDigest\UseLogonCredential':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
 
   registry_value { 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\FilterAdministratorToken':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
   if ($disable_LocalAccountTokenFilterPolicy) {
   registry_value { 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
   }
 
@@ -365,33 +364,33 @@ node default {
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\EnableModuleLogging':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
   registry_key { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames':
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames\*':
-    ensure     => present,
-    type       => string,
-    data       => '*',
+    ensure => present,
+    type   => string,
+    data   => '*',
   }
   registry_key { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging':
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging\EnableScriptBlockLogging':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
   registry_key { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription':
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\Transcription\EnableTranscripting':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
   # FIXME! nok windowsfeature, nok dsc_windowsfeature...
 #  windowsfeature { 'MicrosoftWindowsPowerShellV2':
@@ -407,51 +406,51 @@ node default {
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowYourAccount\value':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
 
   registry_key { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore':
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore\AutoDownload':
-    ensure     => present,
-    type       => dword,
-    data       => 4,
+    ensure => present,
+    type   => dword,
+    data   => 4,
   }
 
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore\DisableOSUpgrade':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
   registry_key { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search':
     ensure => present,
   }
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search\AllowIndexingEncryptedStoresOrItems':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\NtfsDisableLastAccessUpdate':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnablePrefetcher':
-    ensure     => present,
-    type       => dword,
-    data       => 3,
+    ensure => present,
+    type   => dword,
+    data   => 3,
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnableSuperfetch':
-    ensure     => present,
-    type       => dword,
-    data       => 3,
+    ensure => present,
+    type   => dword,
+    data   => 3,
   }
 
   # wsh-101: Review potentially dangerous extensions association
@@ -460,28 +459,28 @@ node default {
   $dangerousext = ['hta', 'vbe', 'vbs', 'VBE', 'js', 'jse', 'sct', 'wsc', 'wsf', 'wsh', 'pif', 'jar']
   $dangerousext.each |String $ext| {
 #    registry_value { "Extension ${ext}":
-#      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
-#      ensure     => present,
-#      value      => '(Default)',
-#      type       => string,
-#      data       => '\"%windir%\system32\notepad.exe\" %1',
+#      path   => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
+#      ensure => present,
+#      value  => '(Default)',
+#      type   => string,
+#      data   => '\"%windir%\system32\notepad.exe\" %1',
 #    }
 #    registry_value { "Extension ${ext} OpenWithList":
-#      path       => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
-#      ensure     => present,
-#      value      => 'a',
-#      type       => string,
-#      data       => '\"%windir%\system32\notepad.exe\" %1',
+#      path   => "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
+#      ensure => present,
+#      value  => 'a',
+#      type   => string,
+#      data   => '\"%windir%\system32\notepad.exe\" %1',
 #    }
     dsc_registry {"registry_ext_${ext}":
-      dsc_ensure => 'Present',
-      dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}",
       dsc_valuename => '(Default)',
       dsc_valuedata => '"%windir%\system32\notepad.exe" "%1"',
     }
     dsc_registry {"registry_ext_${ext}_OpenWithList":
-      dsc_ensure => 'Present',
-      dsc_key => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.${ext}\\OpenWithList",
       dsc_valuename => 'a',
       dsc_valuedata => '"%windir%\system32\notepad.exe" "%1"',
     }
@@ -490,10 +489,10 @@ node default {
   $dangerousextcmd = ['HKCR:\\htafile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\edit\\command', 'HKCR:\\VBSFile\\shell\\open\\command', 'HKCR:\\VBSFile\\shell\\open2\\command', 'HKCR:\\VBEFile\\shell\\edit\\command', 'HKCR:\\VBEFile\\shell\\open\\command', 'HKCR:\\VBEFile\\shell\\open2\\command', 'HKCR:\\JSFile\\shell\\open\\command', 'HKCR:\\JSEFile\\shell\\open\\command', 'HKCR:\\wshfile\\shell\\open\\command', 'HKCR:\\scriptletfile\\shell\\open\\command' ]
   $dangerousextcmd.each |String $extcmd| {
     registry::value { "Extension ${extcmd}":
-      key        => "${extcmd}",
-      value      => '(Default)',
-      type       => string,
-      data       => '"%windir%\system32\notepad.exe" "%1"',
+      key   => $extcmd,
+      value => '(Default)',
+      type  => string,
+      data  => '"%windir%\system32\notepad.exe" "%1"',
     }
 #    dsc_registry {"registry_ext_${extcmd}":
 #      dsc_ensure => 'Present',
@@ -505,9 +504,9 @@ node default {
 
   # services-1: Services to be disabled
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters\SMB1':
-    ensure     => present,
-    type       => dword,
-    data       => 0,
+    ensure => present,
+    type   => dword,
+    data   => 0,
   }
   # FIXME!
 #  windowsfeature { 'SMB1Protocol':
@@ -523,9 +522,9 @@ node default {
     ensure => present,
   }
   registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad\WpadOverride':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
   # tls12
@@ -533,29 +532,29 @@ node default {
   $proto_disable = ['SSL 2.0', 'SSL 3.0']
   $proto_enable.each |String $proto| {
     dsc_registry {"Client-${proto}-DisabledByDefault":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
       dsc_valuetype => 'Dword',
     }
     dsc_registry {"Client-${proto}-Enabled":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '1',
       dsc_valuetype => 'Dword',
     }
     dsc_registry {"Server-${proto}-DisabledByDefault":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
       dsc_valuetype => 'Dword',
     }
     dsc_registry {"Server-${proto}-Enabled":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '1',
       dsc_valuetype => 'Dword',
@@ -563,29 +562,29 @@ node default {
   }
   $proto_disable.each |String $proto| {
     dsc_registry {"Client-${proto}-DisabledByDefault":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
       dsc_valuetype => 'Dword',
     }
     dsc_registry {"Client-${proto}-Enabled":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Client",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '0',
       dsc_valuetype => 'Dword',
     }
     dsc_registry {"Server-${proto}-DisabledByDefault":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'DisabledByDefault',
       dsc_valuedata => '0',
       dsc_valuetype => 'Dword',
     }
     dsc_registry {"Server-${proto}-Enabled":
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\${proto}\\Server",
       dsc_valuename => 'Enabled',
       dsc_valuedata => '0',
       dsc_valuetype => 'Dword',
@@ -607,7 +606,7 @@ node default {
 ##    policy_value   => '*S-1-0-0,vagrant',
 #  }
 
-   # already in harden_windows_server
+  # already in harden_windows_server
 #  local_security_policy { 'Create symbolic links':
 #    ensure         => 'present',
 #    policy_setting => 'SeCreateSymbolicLinkPrivilege',
@@ -619,350 +618,350 @@ node default {
 
   # misc
   file { 'applocker.xml':
-    path    => 'c:/windows/temp/applocker.xml',
-    ensure  => file,
-#    source  => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
-    source  => "${facts['filetemp_path']}\\applocker.xml",
+    ensure => file,
+    path   => 'c:/windows/temp/applocker.xml',
+#    source => "puppet:///modules/puppet-meta-harden-windows/applocker.xml",
+    source => "${facts['filetemp_path']}\\applocker.xml",
   }
   exec { 'Set-AppLockerPolicy':
-    command   => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
-    provider  => powershell,
+    command  => 'Set-AppLockerPolicy -XMLPolicy c:\windows\temp\applocker.xml',
+    provider => powershell,
   }
 
   file { 'firewall.wfw':
-    path    => 'c:/windows/temp/firewall.wfw',
-    ensure  => file,
-#    source  => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
-    source  => "${facts['filetemp_path']}\\firewall.wfw",
+    ensure => file,
+    path   => 'c:/windows/temp/firewall.wfw',
+#    source => "puppet:///modules/puppet-meta-harden-windows/firewall.wfw",
+    source => "${facts['filetemp_path']}\\firewall.wfw",
   }
   if ($load_firewall_rules) {
   exec { 'Firewall import':
-    command   => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
+    command => 'c:\windows\system32\netsh.exe advfirewall import c:\windows\temp\firewall.wfw',
   }
   }
 
   # stig/iadgov
 # FIXME! Munging failed
 #  registry_value { 'HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI\EnumerateAdministrators':
-#    ensure     => present,
-#    type       => dword,
-#    data       => 0,
+#    ensure => present,
+#    type   => dword,
+#    data   => 0,
 #  }
-  dsc_registry {"EnumerateAdministrators":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
+  dsc_registry {'EnumerateAdministrators':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\CredUI',
     dsc_valuename => 'EnumerateAdministrators',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
   registry_value { 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
 #  registry_value { 'HKLM\Software\Policies\Microsoft\Windows NT\Terminal Services\fDisableCdm':
-#    ensure     => present,
-#    type       => dword,
-#    data       => 1,
+#    ensure => present,
+#    type   => dword,
+#    data   => 1,
 #  }
-  dsc_registry {"fDisableCdm":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services',
+  dsc_registry {'fDisableCdm':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services',
     dsc_valuename => 'fDisableCdm',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters\RequireSecuritySignature':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\UseMachineId':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
 # FIXME!
 # https://tickets.puppetlabs.com/browse/MODULES-3195
 # https://tickets.puppetlabs.com/browse/MODULES-5011
 #  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0\allownullsessionfallback':
-#    ensure     => present,
-#    type       => dword,
-#    data       => 0,
+#    ensure => present,
+#    type   => dword,
+#    data   => 0,
 #  }
-  dsc_registry {"allownullsessionfallback":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
+  dsc_registry {'allownullsessionfallback':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0',
     dsc_valuename => 'allownullsessionfallback',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
 #  registry_value { 'HKLM\SYSTEM\CurrentControlSet\Control\LSA\pku2u\AllowOnlineID':
-#    ensure     => present,
-#    type       => dword,
-#    data       => 0,
+#    ensure => present,
+#    type   => dword,
+#    data   => 0,
 #  }
-  dsc_registry {"AllowOnlineID":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
+  dsc_registry {'AllowOnlineID':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\pku2u',
     dsc_valuename => 'AllowOnlineID',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
   registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\LDAP\LDAPClientIntegrity':
-    ensure     => present,
-    type       => dword,
-    data       => 1,
+    ensure => present,
+    type   => dword,
+    data   => 1,
   }
 
-  dsc_registry {"The Windows Remote Management (WinRM) service must not store RunAs credentials.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service',
+  dsc_registry {'The Windows Remote Management (WinRM) service must not store RunAs credentials.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service',
     dsc_valuename => 'DisableRunAs',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"InPrivate browsing in Microsoft Edge must be disabled.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main',
+  dsc_registry {'InPrivate browsing in Microsoft Edge must be disabled.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main',
     dsc_valuename => 'AllowInPrivate',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Unauthenticated RPC clients must be restricted from connecting to the RPC server.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc',
+  dsc_registry {'Unauthenticated RPC clients must be restricted from connecting to the RPC server.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc',
     dsc_valuename => 'RestrictRemoteClients',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The machine inactivity limit must be set to 15 minutes, locking the system with the screensaver.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
+  dsc_registry {'The machine inactivity limit must be set to 15 minutes, locking the system with the screensaver.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
     dsc_valuename => 'InactivityTimeoutSecs',
     dsc_valuedata => '900',
     dsc_valuetype => 'Dword',
   }
 
   # empty rule: ensure_hardened_unc_paths_is_set_to_enabled_with_require_mutual_authentication_and_require_integrity_for_all_netlogon_and_sysvol_shares
-  dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - NETLOGON":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
+  dsc_registry {'Hardened UNC Paths must be defined to require mutual authentication and integrity - NETLOGON':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
     dsc_valuename => '\\\\*\NETLOGON',
     dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
   }
-  dsc_registry {"Hardened UNC Paths must be defined to require mutual authentication and integrity - SYSVOL":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
+  dsc_registry {'Hardened UNC Paths must be defined to require mutual authentication and integrity - SYSVOL':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths',
     dsc_valuename => '\\\\*\SYSVOL',
     dsc_valuedata => 'RequireMutualAuthentication=1,RequireIntegrity=1',
   }
 
-  dsc_registry {"Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters',
+  dsc_registry {'Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters',
     dsc_valuename => 'SupportedEncryptionTypes',
     dsc_valuedata => '2147483640',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Camera access from the lock screen must be disabled.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization',
+  dsc_registry {'Camera access from the lock screen must be disabled.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization',
     dsc_valuename => 'NoLockScreenCamera',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The display of slide shows on the lock screen must be disabled.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization',
+  dsc_registry {'The display of slide shows on the lock screen must be disabled.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization',
     dsc_valuename => 'NoLockScreenSlideshow',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"IPv6 source routing must be configured to highest protection.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters',
+  dsc_registry {'IPv6 source routing must be configured to highest protection.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters',
     dsc_valuename => 'DisableIpSourceRouting',
     dsc_valuedata => '2',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The system must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF) generated routes.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters',
+  dsc_registry {'The system must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF) generated routes.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters',
     dsc_valuename => 'EnableICMPRedirect',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The system must be configured to ignore NetBIOS name release requests except from WINS servers.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Services\Netbt\Parameters',
+  dsc_registry {'The system must be configured to ignore NetBIOS name release requests except from WINS servers.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SYSTEM\CurrentControlSet\Services\Netbt\Parameters',
     dsc_valuename => 'NoNameReleaseOnDemand',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Insecure logons to an SMB server must be disabled.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation',
+  dsc_registry {'Insecure logons to an SMB server must be disabled.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation',
     dsc_valuename => 'AllowInsecureGuestAuth',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Wi-Fi Sense must be disabled.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config',
+  dsc_registry {'Wi-Fi Sense must be disabled.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config',
     dsc_valuename => 'AutoConnectAllowedOEM',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Downloading print driver packages over HTTP must be prevented.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers',
+  dsc_registry {'Downloading print driver packages over HTTP must be prevented.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers',
     dsc_valuename => 'DisableWebPnPDownload',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Web publishing and online ordering wizards must be prevented from downloading a list of providers.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer',
+  dsc_registry {'Web publishing and online ordering wizards must be prevented from downloading a list of providers.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer',
     dsc_valuename => 'NoWebServices',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Users must be prompted for a password on resume from sleep (on battery).":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51',
+  dsc_registry {'Users must be prompted for a password on resume from sleep (on battery).':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51',
     dsc_valuename => 'DCSettingIndex',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Local users on domain-joined computers must not be enumerated.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
+  dsc_registry {'Local users on domain-joined computers must not be enumerated.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
     dsc_valuename => 'EnumerateLocalUsers',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The network selection user interface (UI) must not be displayed on the logon screen.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
+  dsc_registry {'The network selection user interface (UI) must not be displayed on the logon screen.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
     dsc_valuename => 'DontDisplayNetworkSelectionUI',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Printing over HTTP must be prevented.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers',
+  dsc_registry {'Printing over HTTP must be prevented.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers',
     dsc_valuename => 'DisableHTTPPrinting',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Users must not be allowed to ignore SmartScreen filter warnings for unverified files in Microsoft Edge.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter',
+  dsc_registry {'Users must not be allowed to ignore SmartScreen filter warnings for unverified files in Microsoft Edge.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter',
     dsc_valuename => 'PreventOverrideAppRepUnknown',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Users must not be allowed to ignore SmartScreen filter warnings for malicious websites in Microsoft Edge.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter',
+  dsc_registry {'Users must not be allowed to ignore SmartScreen filter warnings for malicious websites in Microsoft Edge.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter',
     dsc_valuename => 'PreventOverride',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Enhanced anti-spoofing when available must be enabled for facial recognition.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures',
+  dsc_registry {'Enhanced anti-spoofing when available must be enabled for facial recognition.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures',
     dsc_valuename => 'EnhancedAntiSpoofing',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat',
+  dsc_registry {'The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat',
     dsc_valuename => 'DisableInventory',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The setting to allow Microsoft accounts to be optional for modern style apps must be enabled.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
+  dsc_registry {'The setting to allow Microsoft accounts to be optional for modern style apps must be enabled.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
     dsc_valuename => 'MSAOptional',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The minimum pin length for Microsoft Passport for Work must be 6 characters or greater.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork\PINComplexity',
+  dsc_registry {'The minimum pin length for Microsoft Passport for Work must be 6 characters or greater.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork\PINComplexity',
     dsc_valuename => 'MinimumPINLength',
     dsc_valuedata => '6',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The use of a hardware security device with Windows Hello for Business must be enabled.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork',
+  dsc_registry {'The use of a hardware security device with Windows Hello for Business must be enabled.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork',
     dsc_valuename => 'RequireSecurityDevice',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Signing in using a PIN must be turned off.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
+  dsc_registry {'Signing in using a PIN must be turned off.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System',
     dsc_valuename => 'AllowDomainPINLogon',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"The system must be configured to prevent the storage of passwords and credentials.":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa',
+  dsc_registry {'The system must be configured to prevent the storage of passwords and credentials.':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa',
     dsc_valuename => 'DisableDomainCreds',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Disable Windows Script Host":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
+  dsc_registry {'Disable Windows Script Host':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
     dsc_valuename => 'Enabled',
     dsc_valuedata => '0',
     dsc_valuetype => 'Dword',
   }
 
-  dsc_registry {"Disable Windows Script Host - IgnoreUserSettings":
-    dsc_ensure => 'Present',
-    dsc_key => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
+  dsc_registry {'Disable Windows Script Host - IgnoreUserSettings':
+    dsc_ensure    => 'Present',
+    dsc_key       => 'HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings',
     dsc_valuename => 'IgnoreUserSettings',
     dsc_valuedata => '1',
     dsc_valuetype => 'Dword',
