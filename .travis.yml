@@ -9,7 +9,10 @@ install:
   - sudo dpkg -i puppet6-release-xenial.deb
   - sudo apt-get update
   - sudo apt-get install puppetserver puppet-agent
-  - puppet --version
+  - env
+  - which ruby
+  - ruby --version
+  - '__rvm_unload && puppet --version'
   - gem install puppet-lint
 
 # https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
