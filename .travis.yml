@@ -1,0 +1,14 @@
+---
+dist: xenial
+
+install:
+  - wget https://apt.puppetlabs.com/puppet6-release-xenial.deb
+  - sudo dpkg -i puppet6-release-xenial.deb
+  - sudo apt-get update
+  - sudo apt-get install puppet-agent
+  - gem install puppet-lint
+
+# https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
+script:
+  - puppet parser validate manifests/site.pp
+  - puppet-lint manifests/site.pp
