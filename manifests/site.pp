@@ -74,8 +74,8 @@ node default {
   # requirement for powershell install
   dsc_service{'wuauserv':
     dsc_startuptype => 'Automatic',
-    dsc_name => 'wuauserv',
-    dsc_state  => 'Running'
+    dsc_name        => 'wuauserv',
+    dsc_state       => 'Running'
   }
 
   # chocolatey install (default for Windows)
@@ -91,10 +91,10 @@ node default {
     }
   }
   package { 'sysmon':
-      ensure   => latest,
-      provider => chocolatey,
-#      source   => 'https://<internal_repo>/chocolatey',
-      install_options   => ['--checksum64', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7', '--checksum', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7']
+      ensure          => latest,
+      provider        => chocolatey,
+#      source          => 'https://<internal_repo>/chocolatey',
+      install_options => ['--checksum64', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7', '--checksum', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7']
   }
 
   file { 'sysmonconfig.xml':
@@ -151,8 +151,8 @@ node default {
 #      max_log_policy => 'overwrite'
 #    }
     dsc_registry {$log:
-      dsc_ensure => 'Present',
-      dsc_key => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
+      dsc_ensure    => 'Present',
+      dsc_key       => "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\${log}",
       dsc_valuename => 'MaxSize',
       dsc_valuedata => '536870912',
       dsc_valuetype => 'Dword',
