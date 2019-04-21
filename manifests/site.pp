@@ -83,7 +83,7 @@ node default {
 # FIXME! vagrant crash with chocolatey packages install. appveyor OK
 # FIXME! LAPS not available/pending package fix https://chocolatey.org/packages/laps
 #  $chocolatey_packages = []
-  each($chocolatey_packages) |String $pkg| {
+  $chocolatey_packages.each |String $pkg| {
     package { $pkg:
       ensure   => latest,
       provider => chocolatey,
@@ -144,7 +144,7 @@ node default {
   }
 
   $eventlogs = [ 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-WMI-Activity/Operational', 'Microsoft-Windows-Sysmon/Operational', 'Microsoft-Windows-AppLocker/EXE and DLL', 'Microsoft-Windows-AppLocker/MSI and Script', 'Microsoft-Windows-AppLocker/Packaged app-Deployment', 'Microsoft-Windows-AppLocker/Packaged app-Execution', 'Microsoft-Windows-TaskScheduler/Operational', 'Microsoft-Windows-DNS-Client/Operational' ]
-  each($eventlogs) |String $log| {
+  $eventlogs.each |String $log| {
     # FIXME!
 #    windows_eventlog { "${log}":
 #      log_size => '536870912',
