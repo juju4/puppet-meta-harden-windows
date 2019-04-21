@@ -14,10 +14,10 @@ install:
   - which gem
   - ruby --version
   - gem install puppet-lint
-  - 'puppet-lint --no-140chars-check manifests/site.pp || true'
 
 # https://puppet.com/blog/verifying-puppet-checking-syntax-and-writing-automated-tests
 script:
+  - 'puppet-lint --no-140chars-check manifests/site.pp || true'
   - __rvm_unload
   - which ruby
   - which gem
