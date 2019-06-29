@@ -94,7 +94,7 @@ node default {
       ensure          => latest,
       provider        => chocolatey,
 #      source          => 'https://<internal_repo>/chocolatey',
-#      install_options => ['--checksum64', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7', '--checksum', '8CA4CBC2AC66918B74DDE9B719C053BF16F97B182D9B85082AAC831EE747D0C7']
+      install_options => ['--checksum64', '7C81B9757E33798266FF918E493E4CAF94688C17836A026E732FA09FD7359FC1', '--checksum', '7C81B9757E33798266FF918E493E4CAF94688C17836A026E732FA09FD7359FC1']
   }
 
   file { 'sysmonconfig.xml':
