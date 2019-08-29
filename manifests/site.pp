@@ -49,11 +49,11 @@ node default {
     ensure_enable_disable_perftrack_is_set_to_disabled => true,
     ensure_enable_windows_ntp_client_is_set_to_enabled => true,
     ensure_enable_windows_ntp_server_is_set_to_disabled => true,
+    ensure_act_as_part_of_the_operating_system_is_set_to_no_one => true,
 
     # re-evaluate. some might be defined later
     ensure_add_workstations_to_domain_is_set_to_administrators => true,
     configure_allow_log_on_through_remote_desktop_services => false,
-    ensure_act_as_part_of_the_operating_system_is_set_to_no_one => false,
     configure_access_this_computer_from_the_network => false,
     ensure_access_credential_manager_as_a_trusted_caller_is_set_to_no_one => false,
     # FIXME! not applied
